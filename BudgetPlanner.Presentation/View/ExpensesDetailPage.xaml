@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BudgetPlanner.Presentation.View.ExpensesDetailPage"
+             xmlns:viewmodel="clr-namespace:BudgetPlanner.Presentation.ViewModel"
+             x:DataType="viewmodel:ExpensesViewModel"
+             xmlns:local="clr-namespace:BudgetPlanner.Presentation.Model">
+
+
+    <Grid RowDefinitions="50, 50,50, *" RowSpacing="30" Padding="10">
+
+        <Entry Grid.Row="0" Placeholder="Name" Text="{Binding CurrentExpense.Name}" />
+        <Entry Grid.Row="1" Placeholder="Betrag" Text="{Binding CurrentExpense.Amount}" />
+        <Entry Grid.Row="2" Placeholder="Zeitintervall" Text="{Binding CurrentExpense.TimeInterval}"  />
+
+        <VerticalStackLayout Grid.Row="3" Spacing="10" >
+        <Button HeightRequest="50" Text="Hinzufügen" VerticalOptions="Center" Command="{Binding SaveCurrentExpenseCommand}" />
+            <Button HeightRequest="50" Text="Abbrechen" VerticalOptions="Center" Command="{Binding CancelCommand}" />
+        </VerticalStackLayout>
+    </Grid>
+    
+</ContentPage>

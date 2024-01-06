@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetPlanner", "BudgetPlanner\BudgetPlanner.csproj", "{9BC58B17-F251-4F28-B92B-57DDB106D66E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetPlanner.Presentation", "BudgetPlanner.Presentation\BudgetPlanner.Presentation.csproj", "{9BC58B17-F251-4F28-B92B-57DDB106D66E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetPlanner.Application", "BudgetPlanner.Application\BudgetPlanner.Application.csproj", "{11C43072-19EB-4E15-AB9D-A8836135E0F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BudgetPlanner.Application", "BudgetPlanner.Application\BudgetPlanner.Application.csproj", "{11C43072-19EB-4E15-AB9D-A8836135E0F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetPlanner.Domain", "BudgetPlanner.Domain\BudgetPlanner.Domain.csproj", "{2E3A7252-70F7-46B3-89C6-9DCD15F89718}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BudgetPlanner.Domain", "BudgetPlanner.Domain\BudgetPlanner.Domain.csproj", "{2E3A7252-70F7-46B3-89C6-9DCD15F89718}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetPlanner.Infrastructure", "BudgetPlanner.Infrastructure\BudgetPlanner.Infrastructure.csproj", "{7FE36A6E-D3C8-420C-9F8A-14AC43CF16A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BudgetPlanner.Infrastructure", "BudgetPlanner.Infrastructure\BudgetPlanner.Infrastructure.csproj", "{7FE36A6E-D3C8-420C-9F8A-14AC43CF16A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
