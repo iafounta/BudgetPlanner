@@ -6,18 +6,27 @@ using System.Collections.ObjectModel;
 
 namespace BudgetPlanner.Presentation.ViewModel
 {
-    public partial class ExpensesViewModel : ObservableObject{
-
+    public partial class ExpensesViewModel : ObservableObject
+    {
+        private readonly ISender _mediator;
         private bool isNeuExpense;
 
-        public ExpensesViewModel()
+        public ExpensesViewModel(ISender mediator)
         {
-            ExpensesItems = new ObservableCollection<ExpensesModel> {
-                new ExpensesModel() { Name = "Miete", Amount = 1500.00f,  TimeInterval = "Monatlich"},
-                new ExpensesModel() { Name = "Krankenkasse", Amount = 320.50f,  TimeInterval = "Monatlich"},
-                new ExpensesModel() { Name = "Internet", Amount = 80.00f,  TimeInterval = "Monatlich"},
-                new ExpensesModel() { Name = "Einkaufen", Amount = 100.00f,  TimeInterval = "Wochenlich"},
-            };
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+
+            var result = _mediator.Send(new GetAllExpense()).GetAwaiter().GetResult();
+            if (result.IsSuccess)
+            {
+                ExpensesItems = new ObservableCollection<ExpensesModel> 
+                {
+                    new ExpensesModel() { Name = "Miete", Amount = 1500.00f,  TimeInterval = "Monatlich"},
+                    new ExpensesModel() { Name = "Krankenkasse", Amount = 320.50f,  TimeInterval = "Monatlich"},
+                    new ExpensesModel() { Name = "Internet", Amount = 80.00f,  TimeInterval = "Monatlich"},
+                    new ExpensesModel() { Name = "Einkaufen", Amount = 100.00f,  TimeInterval = "Wochenlich"},
+                };
+            }
+            
         }
 
         [ObservableProperty]
