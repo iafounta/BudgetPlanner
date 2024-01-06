@@ -10,7 +10,7 @@ on:
     branches: [ "master" ]
 
 env:
-  PROJECT_PATH: "BudgetPlanner/BudgetPlanner.csproj"
+  PROJECT_PATH: "BudgetPlanner.Presentation/BudgetPlanner.Presentation.csproj"
 
 jobs:
 
