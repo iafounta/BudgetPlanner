@@ -44,7 +44,7 @@ public partial class ExpensesViewModel : ObservableObject
     {
         if (isNeuExpense)
         {
-            expensesItems.Add(currentExpense);
+            ExpensesItems.Add(currentExpense);
         }
 
         await Shell.Current.GoToAsync("..");
@@ -70,16 +70,23 @@ public partial class ExpensesViewModel : ObservableObject
 
     async Task GetExpensesAsync()
     {
+        if (ExpensesItems is null)
+        {
+            ExpensesItems = new();
+        }
+
+        if (ExpensesItems.Count != 0)
+        {
+            return;
+        }
+
         var result = await _mediator.Send(new GetAllExpense());
         if (result.IsSuccess)
         {
-            ExpensesItems = new ObservableCollection<ExpensesModel>
+            foreach (var expense in result.Value)
             {
-                new ExpensesModel() { Name = "Miete", Amount = 1500.00f,  TimeInterval = "Monatlich"},
-                new ExpensesModel() { Name = "Krankenkasse", Amount = 320.50f,  TimeInterval = "Monatlich"},
-                new ExpensesModel() { Name = "Internet", Amount = 80.00f,  TimeInterval = "Monatlich"},
-                new ExpensesModel() { Name = "Einkaufen", Amount = 100.00f,  TimeInterval = "Wochenlich"},
-            };
+                ExpensesItems.Add(new ExpensesModel() { Name = expense.Name, Amount = expense.Amount, TimeInterval = expense.TimeInterval });
+            }
         }
     }
 
