@@ -3,7 +3,7 @@
 public partial class ExpensesViewModel : ObservableObject
 {
     private readonly ISender _mediator;
-    private bool isNeuExpense;
+    private bool isNewExpense;
     public ICommand PageAppearingCommand { get; }
 
     public ExpensesViewModel(ISender mediator)
@@ -22,8 +22,8 @@ public partial class ExpensesViewModel : ObservableObject
     [RelayCommand]
     async Task GoToDetailPageToAddNewExpense()
     {
-        isNeuExpense = true;
-        currentExpense = new ExpensesModel();
+        isNewExpense = true;
+        CurrentExpense = new ExpensesModel();
         await Shell.Current.GoToAsync(nameof(ExpensesDetailPage));
         
     }
@@ -32,8 +32,8 @@ public partial class ExpensesViewModel : ObservableObject
     [RelayCommand]
     async Task GoToDetailPageToEditExpense(ExpensesModel expense)
     {
-        isNeuExpense = false;
-        currentExpense = expense;
+        isNewExpense = false;
+        CurrentExpense = expense;
         await Shell.Current.GoToAsync(nameof(ExpensesDetailPage));
 
     }
@@ -42,9 +42,14 @@ public partial class ExpensesViewModel : ObservableObject
     [RelayCommand]
     async Task SaveCurrentExpense()
     {
-        if (isNeuExpense)
+        if (isNewExpense)
         {
-            ExpensesItems.Add(currentExpense);
+            ExpensesItems.Add(CurrentExpense);
+            var result = await _mediator.Send(new AddExpense(currentExpense.Name, currentExpense.Amount, currentExpense.TimeInterval));
+            if (result.IsSuccess)
+            {
+                // Expense successfully saved
+            }
         }
 
         await Shell.Current.GoToAsync("..");
@@ -66,6 +71,7 @@ public partial class ExpensesViewModel : ObservableObject
             ExpensesItems.Remove(e);
         }
 
+        await Task.CompletedTask;
     }
 
     async Task GetExpensesAsync()
@@ -83,6 +89,11 @@ public partial class ExpensesViewModel : ObservableObject
         var result = await _mediator.Send(new GetAllExpense());
         if (result.IsSuccess)
         {
+            if (result.Value!.Count == 0)
+            {
+                return;
+            }
+
             foreach (var expense in result.Value)
             {
                 ExpensesItems.Add(new ExpensesModel() { Name = expense.Name, Amount = expense.Amount, TimeInterval = expense.TimeInterval });
