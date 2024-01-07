@@ -1,5 +1,3 @@
-using BudgetPlanner.Presentation.ViewModel;
-
 namespace BudgetPlanner.Presentation.View;
 
 public partial class ExpensesPage : ContentPage
