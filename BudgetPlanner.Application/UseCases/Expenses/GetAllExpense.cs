@@ -1,31 +1,27 @@
 ﻿
 namespace BudgetPlanner.Application.UseCases.Expenses;
 
-public class GetAllExpense : IQuery<Result<List<ExpenseVm>>>
+public class GetAllExpense : IQuery<Result<List<Expense>>>
 {
-    public class GetAllExpenseHandler : IQueryHandler<GetAllExpense, Result<List<ExpenseVm>>>
+    public class GetAllExpenseHandler : IQueryHandler<GetAllExpense, Result<List<Expense>>>
     {
         private readonly IExpenseRepository _repository;
-        private readonly IMapper<Expense, ExpenseVm> _mapper;
 
-        public GetAllExpenseHandler(IExpenseRepository repository, IMapper<Expense, ExpenseVm> mapper)
+        public GetAllExpenseHandler(IExpenseRepository repository)
         {
             _repository = repository;
-            _mapper = mapper;
         }
 
-        public async Task<Result<List<ExpenseVm>>> Handle(GetAllExpense request, CancellationToken cancellationToken)
+        public async Task<Result<List<Expense>>> Handle(GetAllExpense request, CancellationToken cancellationToken)
         {
             List<Expense> allExpenses = await _repository.GetExpensesAsync();
 
             if (allExpenses == null)
             {
-                return Result<List<ExpenseVm>>.Failure(ErrorMessage.CannotFetchExpenses);
+                return Result<List<Expense>>.Failure(ErrorMessage.CannotFetchExpenses);
             }
 
-            IEnumerable<ExpenseVm> mappedExpenses = _mapper.Map(allExpenses);
-
-            return Result<List<ExpenseVm>>.Success(mappedExpenses.ToList());
+            return Result<List<Expense>>.Success(allExpenses.ToList());
         }
     }
 }
