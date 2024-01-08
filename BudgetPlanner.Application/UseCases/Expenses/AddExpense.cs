@@ -3,7 +3,7 @@ using BudgetPlanner.Domain.Results;
 
 namespace BudgetPlanner.Application.UseCases.Expenses;
 
-public class AddExpense : ICommand<Result<Unit>>
+public class AddExpense : ICommand<Result<Guid>>
 {
     public string Name { get; }
     public float Amount { get; }
@@ -16,7 +16,7 @@ public class AddExpense : ICommand<Result<Unit>>
         TimeInterval = timeInterval;
     }
 
-    public class AddExpensesHandler : ICommandHandler<AddExpense, Result<Unit>>
+    public class AddExpensesHandler : ICommandHandler<AddExpense, Result<Guid>>
     {
         private readonly IExpenseRepository _repository;
 
@@ -25,7 +25,7 @@ public class AddExpense : ICommand<Result<Unit>>
             _repository = repository;
         }
 
-        public async Task<Result<Unit>> Handle(AddExpense request, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(AddExpense request, CancellationToken cancellationToken)
         {
             Domain.Entities.Expense expense = new()
             {
@@ -38,10 +38,10 @@ public class AddExpense : ICommand<Result<Unit>>
 
             if (result == 0)
             {
-                return Result<Unit>.Failure(ErrorMessage.CannotSaveExpenses);
+                return Result<Guid>.Failure(ErrorMessage.CannotSaveExpenses);
             }
 
-            return Result<Unit>.Success();
+            return Result<Guid>.Success(expense.Id);
         }
     }
 }

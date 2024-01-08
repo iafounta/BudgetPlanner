@@ -1,6 +1,4 @@
-﻿using BudgetPlanner.Presentation.Service;
-
-namespace BudgetPlanner.Presentation.ViewModel;
+﻿namespace BudgetPlanner.Presentation.ViewModel;
 
 public partial class ExpensesViewModel : ObservableObject
 {
@@ -18,14 +16,16 @@ public partial class ExpensesViewModel : ObservableObject
     ObservableCollection<ExpensesModel> expensesItems;
 
     [ObservableProperty]
-    ExpensesModel currentExpense;
+    ExpensesModel editableExpense;
+
+    ExpensesModel copyExpense;
 
 
     [RelayCommand]
     async Task GoToDetailPageToAddNewExpense()
     {
         isNewExpense = true;
-        CurrentExpense = new ExpensesModel();
+        EditableExpense = new ExpensesModel();
         await Shell.Current.GoToAsync(nameof(ExpensesDetailPage));
         
     }
@@ -35,7 +35,14 @@ public partial class ExpensesViewModel : ObservableObject
     async Task GoToDetailPageToEditExpense(ExpensesModel expense)
     {
         isNewExpense = false;
-        CurrentExpense = expense;
+        EditableExpense = expense;
+        copyExpense = new ExpensesModel
+        {
+            Id = expense.Id,
+            Name = expense.Name,
+            Amount = expense.Amount,
+            TimeInterval = expense.TimeInterval
+        };
         await Shell.Current.GoToAsync(nameof(ExpensesDetailPage));
 
     }
@@ -46,11 +53,21 @@ public partial class ExpensesViewModel : ObservableObject
     {
         if (isNewExpense)
         {
-            ExpensesItems.Add(CurrentExpense);
-            var result = await _mediator.Send(new AddExpense(currentExpense.Name, currentExpense.Amount, currentExpense.TimeInterval));
-            if (result.IsSuccess)
+            var result = await _mediator.Send(new AddExpense(EditableExpense.Name, EditableExpense.Amount, EditableExpense.TimeInterval));
+
+            if (!result.IsSuccess)
             {
-                // Expense successfully saved
+                // Here should appear an error message when the entry could not be added
+            }
+            EditableExpense.Id = result.Value;
+            ExpensesItems.Add(EditableExpense);
+        }
+        else
+        {
+            var result = await _mediator.Send(new UpdateExpense(EditableExpense.Id, EditableExpense.Name, EditableExpense.Amount, EditableExpense.TimeInterval));
+            if (!result.IsSuccess)
+            {
+                // Here should appear an error message when the entry could not be updated
             }
         }
 
@@ -60,6 +77,9 @@ public partial class ExpensesViewModel : ObservableObject
     [RelayCommand]
     async Task Cancel()
     {
+        EditableExpense.Name = copyExpense.Name;
+        EditableExpense.Amount = copyExpense.Amount;
+        EditableExpense.TimeInterval = copyExpense.TimeInterval;
         await Shell.Current.GoToAsync("..");
     }
 
@@ -73,6 +93,10 @@ public partial class ExpensesViewModel : ObservableObject
             ExpensesItems.Remove(e);
         }
         var result = await _mediator.Send(new DeleteExpense(e.Id));
+        if (!result.IsSuccess)
+        {
+            // Here should appear an error message when the entry could not be delted
+        }
     }
 
     async Task GetExpensesAsync()
