@@ -1,25 +1,43 @@
-﻿namespace BudgetPlanner.Infrastructure.Repositories;
+﻿using BudgetPlanner.Application.UseCases.Expenses;
+using BudgetPlanner.Infrastructure.Interfaces;
+using SQLite;
+
+
+namespace BudgetPlanner.Infrastructure.Repositories;
 
 public class ExpenseRepository : IExpenseRepository
 {
-    public async Task<Result<IEnumerable<Expense>>> GetAllExpenses()
+    private readonly string databasePath;
+    private readonly SQLiteAsyncConnection database;
+    private const string DatabaseFilename = "ExpensesSQLite.db3";
+    private const SQLite.SQLiteOpenFlags Flags = SQLite.SQLiteOpenFlags.ReadWrite | SQLite.SQLiteOpenFlags.Create | SQLite.SQLiteOpenFlags.SharedCache;
+
+    public ExpenseRepository(IDatabasePathProvider pathProvider)
     {
-        IEnumerable<Expense> allExpense = new List<Expense>() {
-            new Expense() { Name = "Miete", Amount = 1500.00f,  TimeInterval = "Monatlich"},
-            new Expense() { Name = "Krankenkasse", Amount = 320.50f,  TimeInterval = "Monatlich"},
-            new Expense() { Name = "Internet", Amount = 80.00f,  TimeInterval = "Monatlich"},
-            new Expense() { Name = "Einkaufen", Amount = 100.00f,  TimeInterval = "Wochenlich"}
-         };
-
-        await Task.CompletedTask;
-
-        return Result<IEnumerable<Expense>>.Success(allExpense);
+        databasePath = pathProvider.GetDatabasePath();
+        database = new SQLiteAsyncConnection(databasePath, Flags);
+        database.CreateTableAsync<Expense>().Wait();
+    }
+    public Task<List<Expense>> GetExpensesAsync()
+    {
+        return database.Table<Expense>().ToListAsync();
     }
 
-    public async Task<Result<Unit>> SaveExpense(Expense expense)
+    public Task<int> SaveExpenseAsync(Expense item)
     {
-        await Task.CompletedTask;
-
-        return Result<Unit>.Success();
+        if (database.Table<Expense>().FirstOrDefaultAsync(x => x.Id == item.Id) != null)
+        {
+            return database.UpdateAsync(item);
+        }
+        else
+        {
+            return database.InsertAsync(item);
+        }
     }
+
+    public Task<int> DeleteExpenseAsync(Guid id)
+    {
+        return database.DeleteAsync<Expense>(id);
+    }
+
 }

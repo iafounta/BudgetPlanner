@@ -2,6 +2,7 @@
 
 public interface IExpenseRepository
 {
-    public Task<Result<Unit>> SaveExpense(Expense expenses);
-    public Task<Result<IEnumerable<Expense>>> GetAllExpenses();
+    public Task<List<Expense>> GetExpensesAsync();
+    public Task<int> SaveExpenseAsync(Expense item);
+    public Task<int> DeleteExpenseAsync(Guid id);
 }

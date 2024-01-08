@@ -1,4 +1,6 @@
-﻿namespace BudgetPlanner.Presentation.ViewModel;
+﻿using BudgetPlanner.Presentation.Service;
+
+namespace BudgetPlanner.Presentation.ViewModel;
 
 public partial class ExpensesViewModel : ObservableObject
 {
@@ -70,8 +72,7 @@ public partial class ExpensesViewModel : ObservableObject
         {
             ExpensesItems.Remove(e);
         }
-
-        await Task.CompletedTask;
+        var result = await _mediator.Send(new DeleteExpense(e.Id));
     }
 
     async Task GetExpensesAsync()

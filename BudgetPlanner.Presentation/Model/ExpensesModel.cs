@@ -1,10 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SQLite;
 
 namespace BudgetPlanner.Presentation.Model
 {
     public partial class ExpensesModel : ObservableObject{
 
-        int Id;
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [ObservableProperty]
         string name;

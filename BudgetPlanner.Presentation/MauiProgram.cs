@@ -1,4 +1,7 @@
-﻿namespace BudgetPlanner.Presentation;
+﻿using BudgetPlanner.Infrastructure.Interfaces;
+using BudgetPlanner.Presentation.Service;
+
+namespace BudgetPlanner.Presentation;
 
 public static class MauiProgram
 {
@@ -22,6 +25,8 @@ public static class MauiProgram
         builder.Services.AddTransient<ExpensesDetailPage>();
         builder.Services.AddApplicationServices();
         builder.Services.AddInfrastructureServices(builder.Configuration);
+        builder.Services.AddSingleton<IDatabasePathProvider, DatabasePathProvider>();
+
 
         return builder.Build();
     }

@@ -16,14 +16,14 @@ public class GetAllExpense : IQuery<Result<List<ExpenseVm>>>
 
         public async Task<Result<List<ExpenseVm>>> Handle(GetAllExpense request, CancellationToken cancellationToken)
         {
-            var allExpenses = await _repository.GetAllExpenses();
+            List<Expense> allExpenses = await _repository.GetExpensesAsync();
 
-            if (!allExpenses.IsSuccess)
+            if (allExpenses == null)
             {
-                return Result<List<ExpenseVm>>.Failure(allExpenses.Error);
+                return Result<List<ExpenseVm>>.Failure(ErrorMessage.CannotFetchExpenses);
             }
 
-            var mappedExpenses = _mapper.Map(allExpenses.Value);
+            IEnumerable<ExpenseVm> mappedExpenses = _mapper.Map(allExpenses);
 
             return Result<List<ExpenseVm>>.Success(mappedExpenses.ToList());
         }

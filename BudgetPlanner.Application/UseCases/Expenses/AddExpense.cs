@@ -1,4 +1,6 @@
 ﻿
+using BudgetPlanner.Domain.Results;
+
 namespace BudgetPlanner.Application.UseCases.Expenses;
 
 public class AddExpense : ICommand<Result<Unit>>
@@ -32,11 +34,11 @@ public class AddExpense : ICommand<Result<Unit>>
                 TimeInterval = request.TimeInterval
             };
 
-            var result = await _repository.SaveExpense(expense);
+            var result = await _repository.SaveExpenseAsync(expense);
 
-            if (!result.IsSuccess)
+            if (result == 0)
             {
-                return Result<Unit>.Failure(result.Error);
+                return Result<Unit>.Failure(ErrorMessage.CannotSaveExpenses);
             }
 
             return Result<Unit>.Success();
