@@ -1,4 +1,4 @@
-﻿using BudgetPlanner.Application.UseCases.Expenses;
+using BudgetPlanner.Application.UseCases.Expenses;
 using BudgetPlanner.Infrastructure.Interfaces;
 using SQLite;
 
@@ -18,6 +18,12 @@ public class ExpenseRepository : IExpenseRepository
         database = new SQLiteAsyncConnection(databasePath, Flags);
         database.CreateTableAsync<Expense>().Wait();
     }
+
+    public async Task<Expense> GetOneExpenseAsync(Guid id)
+    {
+        return await database.Table<Expense>().FirstOrDefaultAsync(x => x.Id == id);
+    }
+
     public Task<List<Expense>> GetExpensesAsync()
     {
         return database.Table<Expense>().ToListAsync();
