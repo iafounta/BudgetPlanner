@@ -1,45 +1,60 @@
-﻿namespace BudgetPlanner.Infrastructure.Repositories;
+﻿using AutoMapper;
+using BudgetPlanner.Infrastructure.Entities;
+
+namespace BudgetPlanner.Infrastructure.Repositories;
 
 public class ExpenseRepository : IExpenseRepository
 {
     private readonly string databasePath;
     private readonly SQLiteAsyncConnection database;
     private const SQLiteOpenFlags Flags = SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create | SQLiteOpenFlags.SharedCache;
+    private readonly IMapper mapper;
 
-    public ExpenseRepository(IDatabasePathProvider pathProvider)
+    public ExpenseRepository(IDatabasePathProvider pathProvider, IMapper mapper)
     {
         databasePath = pathProvider.GetDatabasePath();
         database = new SQLiteAsyncConnection(databasePath, Flags);
-        database.CreateTableAsync<Expense>().Wait();
+        database.CreateTableAsync<ExpenseDBEntity>().Wait();
+        this.mapper = mapper;
     }
 
-    public async Task<Expense> GetOneExpenseAsync(Guid id)
-    {
-        return await database.Table<Expense>().FirstOrDefaultAsync(x => x.Id == id);
+    public async Task<Expense> GetOneExpenseAsync(int id) {
+        ExpenseDBEntity a = await database.Table<ExpenseDBEntity>().FirstOrDefaultAsync(x => x.Id == id);
+        return mapper.Map<Expense>(a);
     }
 
-    public Task<List<Expense>> GetExpensesAsync()
+    public async Task<List<Expense>> GetExpensesAsync()
     {
-        return database.Table<Expense>().ToListAsync();
+        List<ExpenseDBEntity> expenseDbEntityList = await database.Table<ExpenseDBEntity>().ToListAsync();
+        var expenses = expenseDbEntityList.Select(item => mapper.Map<Expense>(item)).ToList();
+        return expenses;
     }
 
     public async Task<int> SaveExpenseAsync(Expense item)
     {
-        var existingItem = await database.Table<Expense>().FirstOrDefaultAsync(x => x.Id == item.Id);
+        ExpenseDBEntity expenseDbEntity = mapper.Map<ExpenseDBEntity>(item);
+        bool isItemExisting = false;
 
-        if (existingItem != null)
+        if (item.Id !=  0) 
         {
-            return await database.UpdateAsync(item);
+            isItemExisting = await database.Table<ExpenseDBEntity>().FirstOrDefaultAsync(x => x.Id == expenseDbEntity.Id) != null ;
+        }
+
+        if (isItemExisting)
+        {
+            await database.UpdateAsync(expenseDbEntity);
+            return expenseDbEntity.Id;
         }
         else
         {
-            return await database.InsertAsync(item);
+            await database.InsertAsync(expenseDbEntity);
+            return expenseDbEntity.Id;
         }
 
     }
 
-    public Task<int> DeleteExpenseAsync(Guid id)
+    public Task<int> DeleteExpenseAsync(int id)
     {
-        return database.DeleteAsync<Expense>(id);
+        return database.DeleteAsync<ExpenseDBEntity>(id);
     }
 }

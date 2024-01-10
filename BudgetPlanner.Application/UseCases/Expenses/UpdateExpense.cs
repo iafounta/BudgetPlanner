@@ -2,12 +2,12 @@
 
 public class UpdateExpense : ICommand<Result<Unit>>
 {
-    public Guid Id { get; }
+    public int Id { get; }
     public string Name { get; }
     public float Amount { get; }
     public string TimeInterval { get; }
 
-    public UpdateExpense(Guid id, string name, float amount, string timeInterval)
+    public UpdateExpense(int id, string name, float amount, string timeInterval)
     {
         Id = id;
         Name = name;
@@ -26,14 +26,14 @@ public class UpdateExpense : ICommand<Result<Unit>>
 
         public async Task<Result<Unit>> Handle(UpdateExpense request, CancellationToken cancellationToken)
         {
-            Expense expense = await _repository.GetOneExpenseAsync(request.Id);
+            Expense Expense = await _repository.GetOneExpenseAsync(request.Id);
 
-            if (expense is null)
+            if (Expense is null)
             {
                 return Result<Unit>.Failure(ErrorMessage.CannotFetchExpenses);
             }
 
-            var result = await _repository.SaveExpenseAsync(expense);
+            var result = await _repository.SaveExpenseAsync(Expense);
 
             if (result == 0)
             {

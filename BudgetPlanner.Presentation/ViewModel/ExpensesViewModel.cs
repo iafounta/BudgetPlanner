@@ -27,16 +27,14 @@ public partial class ExpensesViewModel : ObservableObject
         isNewExpense = true;
         EditableExpense = new ExpensesModel();
         await Shell.Current.GoToAsync(nameof(ExpensesDetailPage));
-        
     }
-
 
     [RelayCommand]
     async Task GoToDetailPageToEditExpense(ExpensesModel expense)
     {
         isNewExpense = false;
-        EditableExpense = expense;
-        copyExpense = new ExpensesModel
+        copyExpense = expense;
+        EditableExpense = new ExpensesModel
         {
             Id = expense.Id,
             Name = expense.Name,
@@ -64,22 +62,30 @@ public partial class ExpensesViewModel : ObservableObject
         }
         else
         {
+
+            copyExpense.Name = EditableExpense.Name;
+            copyExpense.Amount = EditableExpense.Amount;
+            copyExpense.TimeInterval = EditableExpense.TimeInterval;
+
             var result = await _mediator.Send(new UpdateExpense(EditableExpense.Id, EditableExpense.Name, EditableExpense.Amount, EditableExpense.TimeInterval));
+
             if (!result.IsSuccess)
             {
                 // Here should appear an error message when the entry could not be updated
             }
         }
 
-        await Shell.Current.GoToAsync("..");
+        await NavigateBackAsync();
     }
 
     [RelayCommand]
     async Task Cancel()
     {
-        EditableExpense.Name = copyExpense.Name;
-        EditableExpense.Amount = copyExpense.Amount;
-        EditableExpense.TimeInterval = copyExpense.TimeInterval;
+        await NavigateBackAsync();
+    }
+
+    private static async Task NavigateBackAsync()
+    {
         await Shell.Current.GoToAsync("..");
     }
 
@@ -119,9 +125,9 @@ public partial class ExpensesViewModel : ObservableObject
                 return;
             }
 
-            foreach (var expense in result.Value)
+            foreach (Domain.Entities.Expense? expense in result.Value)
             {
-                ExpensesItems.Add(new ExpensesModel() { Name = expense.Name, Amount = expense.Amount, TimeInterval = expense.TimeInterval });
+                ExpensesItems.Add(new ExpensesModel() { Id = expense.Id, Name = expense.Name, Amount = expense.Amount, TimeInterval = expense.TimeInterval });
             }
         }
     }

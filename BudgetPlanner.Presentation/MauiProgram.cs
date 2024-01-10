@@ -23,10 +23,14 @@ public static class MauiProgram
         builder.Services.AddSingleton<ExpensesViewModel>();
         builder.Services.AddSingleton<ExpensesPage>();
         builder.Services.AddTransient<ExpensesDetailPage>();
+
+        builder.Services.AddSingleton<IncomeViewModel>();
+        builder.Services.AddSingleton<IncomePage>();
+        builder.Services.AddTransient<IncomeDetailPage>();
+
         builder.Services.AddApplicationServices();
         builder.Services.AddInfrastructureServices(builder.Configuration);
         builder.Services.AddSingleton<IDatabasePathProvider, DatabasePathProvider>();
-
 
         return builder.Build();
     }

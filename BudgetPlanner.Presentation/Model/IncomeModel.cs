@@ -1,9 +1,8 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using SQLite;
+﻿using SQLite;
 
 namespace BudgetPlanner.Presentation.Model
 {
-    public partial class ExpensesModel : ObservableObject{
+    public partial class IncomeModel : ObservableObject {
         public int Id { get; set; } 
 
         [ObservableProperty]
@@ -14,7 +13,5 @@ namespace BudgetPlanner.Presentation.Model
 
         [ObservableProperty]
         string timeInterval;
-
-
     }
 }

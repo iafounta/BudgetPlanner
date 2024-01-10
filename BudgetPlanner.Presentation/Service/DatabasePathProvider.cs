@@ -6,7 +6,7 @@ namespace BudgetPlanner.Presentation.Service
     {
         public string GetDatabasePath()
         {
-            return Path.Combine(FileSystem.AppDataDirectory, "ExpensesSQLite.db3");
+            return Path.Combine(FileSystem.AppDataDirectory, "BudgetPlannerSQLite.db3");
         }
     }
 }

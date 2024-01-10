@@ -71,8 +71,8 @@
 
 
                                 <Label Grid.Column="0" Text="{Binding Name}" FontSize="20" />
-                                <Label Grid.Column="1" Text="{Binding Amount}" FontSize="20" />
-                                <Label Grid.Column="2" Text="{Binding TimeInterval}" FontSize="10" />
+                                <Label Grid.Column="1" Text="{Binding Amount}" TextColor="Red" FontAttributes="Bold" FontSize="20" />
+                                <Label Grid.Column="2" Text="{Binding TimeInterval}" FontSize="15" />
                             </Grid>
                      
                         </Border>

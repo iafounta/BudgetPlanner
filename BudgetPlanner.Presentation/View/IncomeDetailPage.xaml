@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BudgetPlanner.Presentation.View.IncomeDetailPage"
+             xmlns:viewmodel="clr-namespace:BudgetPlanner.Presentation.ViewModel"
+             x:DataType="viewmodel:IncomeViewModel"
+             xmlns:local="clr-namespace:BudgetPlanner.Presentation.Model">
+
+    <Grid RowDefinitions="50, 50,50, *" RowSpacing="30" Padding="10">
+
+        <Entry Grid.Row="0" Placeholder="Name" Text="{Binding EditableIncome.Name}" />
+        <Entry Grid.Row="1" Placeholder="Betrag" Text="{Binding EditableIncome.Amount}" />
+        <Entry Grid.Row="2" Placeholder="Zeitintervall" Text="{Binding EditableIncome.TimeInterval}"  />
+
+        <VerticalStackLayout Grid.Row="3" Spacing="10" >
+            <Button HeightRequest="50" Text="Hinzufügen" VerticalOptions="Center" Command="{Binding SaveCurrentIncomeCommand}" />
+            <Button HeightRequest="50" Text="Abbrechen" VerticalOptions="Center" Command="{Binding CancelCommand}" />
+        </VerticalStackLayout>
+    </Grid>
+    
+</ContentPage>

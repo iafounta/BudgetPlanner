@@ -8,6 +8,7 @@ namespace BudgetPlanner.Presentation
         {
             InitializeComponent();
             Routing.RegisterRoute(nameof(ExpensesDetailPage), typeof(ExpensesDetailPage));
+            Routing.RegisterRoute(nameof(IncomeDetailPage), typeof(IncomeDetailPage));
         }
     }
 }

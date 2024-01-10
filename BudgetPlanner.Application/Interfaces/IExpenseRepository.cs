@@ -2,8 +2,8 @@
 
 public interface IExpenseRepository
 {
-    public Task<Expense> GetOneExpenseAsync(Guid id);
+    public Task<Expense> GetOneExpenseAsync(int id);
     public Task<List<Expense>> GetExpensesAsync();
     public Task<int> SaveExpenseAsync(Expense item);
-    public Task<int> DeleteExpenseAsync(Guid id);
+    public Task<int> DeleteExpenseAsync(int id);
 }

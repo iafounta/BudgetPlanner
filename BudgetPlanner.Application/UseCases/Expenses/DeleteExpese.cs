@@ -2,9 +2,9 @@
 
 public class DeleteExpense : ICommand<Result<Unit>>
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
-    public DeleteExpense(Guid Id)
+    public DeleteExpense(int Id)
     {
         this.Id = Id;
     }

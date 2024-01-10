@@ -1,8 +1,8 @@
 namespace BudgetPlanner.Presentation.View;
 
-public partial class IncomePage : ContentPage
+public partial class IncomeDetailPage : ContentPage
 {
-	public IncomePage(IncomeViewModel vm)
+	public IncomeDetailPage(IncomeViewModel vm)
 	{
 		InitializeComponent();
 		BindingContext = vm;
