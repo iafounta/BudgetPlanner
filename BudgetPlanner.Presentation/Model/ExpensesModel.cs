@@ -1,20 +1,16 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using SQLite;
+﻿namespace BudgetPlanner.Presentation.Model;
 
-namespace BudgetPlanner.Presentation.Model
-{
-    public partial class ExpensesModel : ObservableObject{
-        public int Id { get; set; } 
+public partial class ExpensesModel : ObservableObject{
+    public int Id { get; set; } 
 
-        [ObservableProperty]
-        string name;
+    [ObservableProperty]
+    string name;
 
-        [ObservableProperty]
-        float amount;
+    [ObservableProperty]
+    float amount;
 
-        [ObservableProperty]
-        string timeInterval;
+    [ObservableProperty]
+    string timeInterval;
 
 
-    }
 }
