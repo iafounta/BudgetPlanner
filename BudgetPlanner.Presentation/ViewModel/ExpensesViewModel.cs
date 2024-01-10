@@ -33,12 +33,23 @@ public partial class ExpensesViewModel : ObservableObject
 
     ExpensesModel copyExpense;
 
+    [ObservableProperty]
+    bool isSaveEnabled;
+
 
     [RelayCommand]
     async Task GoToDetailPageToAddNewExpense()
     {
         isNewExpense = true;
         EditableExpense = new ExpensesModel();
+        IsSaveEnabled = !string.IsNullOrWhiteSpace(EditableExpense.Name) && !string.IsNullOrWhiteSpace(EditableExpense.TimeInterval) && !string.IsNullOrWhiteSpace(EditableExpense.Amount.ToString());
+        EditableExpense.PropertyChanged += (s, e) =>
+        {
+            if (e.PropertyName == nameof(EditableExpense.Name) || e.PropertyName == nameof(EditableExpense.Amount) || e.PropertyName == nameof(EditableExpense.TimeInterval))
+            {
+                IsSaveEnabled = !string.IsNullOrWhiteSpace(EditableExpense.Name) && !string.IsNullOrWhiteSpace(EditableExpense.TimeInterval) && !string.IsNullOrWhiteSpace(EditableExpense.Amount.ToString());
+            }
+        };
         await Shell.Current.GoToAsync(nameof(ExpensesDetailPage));
     }
 
@@ -53,6 +64,14 @@ public partial class ExpensesViewModel : ObservableObject
             Name = expense.Name,
             Amount = expense.Amount,
             TimeInterval = expense.TimeInterval
+        };
+        IsSaveEnabled = !string.IsNullOrWhiteSpace(EditableExpense.Name) && !string.IsNullOrWhiteSpace(EditableExpense.TimeInterval) && !string.IsNullOrWhiteSpace(EditableExpense.Amount.ToString());
+        EditableExpense.PropertyChanged += (s, e) =>
+        {
+            if (e.PropertyName == nameof(EditableExpense.Name) || e.PropertyName == nameof(EditableExpense.Amount) || e.PropertyName == nameof(EditableExpense.TimeInterval))
+            {
+                IsSaveEnabled = !string.IsNullOrWhiteSpace(EditableExpense.Name) && !string.IsNullOrWhiteSpace(EditableExpense.TimeInterval) && !string.IsNullOrWhiteSpace(EditableExpense.Amount.ToString());
+            }
         };
         await Shell.Current.GoToAsync(nameof(ExpensesDetailPage));
 

@@ -4,12 +4,11 @@
 
         private readonly ISender _mediator;
         private bool isNewIncome;
+        public ICommand PageAppearingCommand { get; }
 
         [ObservableProperty]
         ObservableCollection<string> timeIntervalItems;
         private readonly Dictionary<string, string> timeIntervalMapping;
-
-        public ICommand PageAppearingCommand { get; }
 
         public IncomeViewModel(ISender mediator)
         {
@@ -34,12 +33,22 @@
 
         IncomeModel copyIncome;
 
+        [ObservableProperty]
+        bool isSaveEnabled;
 
         [RelayCommand]
         async Task GoToDetailPageToAddNewIncome()
         {
             isNewIncome = true;
             EditableIncome = new IncomeModel();
+            IsSaveEnabled = !string.IsNullOrWhiteSpace(EditableIncome.Name) && !string.IsNullOrWhiteSpace(EditableIncome.TimeInterval) && !string.IsNullOrWhiteSpace(EditableIncome.Amount.ToString());
+            EditableIncome.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(EditableIncome.Name) || e.PropertyName == nameof(EditableIncome.Amount) || e.PropertyName == nameof(EditableIncome.TimeInterval))
+                {
+                    IsSaveEnabled = !string.IsNullOrWhiteSpace(EditableIncome.Name) && !string.IsNullOrWhiteSpace(EditableIncome.TimeInterval) && !string.IsNullOrWhiteSpace(EditableIncome.Amount.ToString());
+                }
+            };
             await Shell.Current.GoToAsync(nameof(IncomeDetailPage));
         }
 
@@ -54,6 +63,14 @@
                 Name = income.Name,
                 Amount = income.Amount,
                 TimeInterval = income.TimeInterval
+            };
+            IsSaveEnabled = !string.IsNullOrWhiteSpace(EditableIncome.Name) && !string.IsNullOrWhiteSpace(EditableIncome.TimeInterval) && !string.IsNullOrWhiteSpace(EditableIncome.Amount.ToString());
+            EditableIncome.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(EditableIncome.Name) || e.PropertyName == nameof(EditableIncome.Amount) || e.PropertyName == nameof(EditableIncome.TimeInterval))
+                {
+                    IsSaveEnabled = !string.IsNullOrWhiteSpace(EditableIncome.Name) && !string.IsNullOrWhiteSpace(EditableIncome.TimeInterval) && !string.IsNullOrWhiteSpace(EditableIncome.Amount.ToString());
+                }
             };
             await Shell.Current.GoToAsync(nameof(IncomeDetailPage));
 

@@ -3,17 +3,44 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BudgetPlanner.Presentation.View.IncomeDetailPage"
              xmlns:viewmodel="clr-namespace:BudgetPlanner.Presentation.ViewModel"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:DataType="viewmodel:IncomeViewModel"
              xmlns:local="clr-namespace:BudgetPlanner.Presentation.Model">
+    <ContentPage.Resources>
+        <Style x:Key="InvalidEntryStyle" TargetType="Entry">
+            <Setter Property="TextColor" Value="Red" />
+        </Style>
+        <Style x:Key="ValidEntryStyle" TargetType="Entry">
+            <Setter Property="TextColor" Value="Green" />
+        </Style>
+    </ContentPage.Resources>
 
     <Grid RowDefinitions="50, 50,50, *" RowSpacing="30" Padding="10">
 
-        <Entry Grid.Row="0" Placeholder="Name" Text="{Binding EditableIncome.Name}" />
-        <Entry Grid.Row="1" Placeholder="Betrag" Text="{Binding EditableIncome.Amount}" />
+        <Entry Grid.Row="0" Placeholder="Name" Text="{Binding EditableIncome.Name}" >
+            <Entry.Behaviors>
+                <toolkit:TextValidationBehavior 
+                InvalidStyle="{StaticResource InvalidEntryStyle}"
+                ValidStyle="{StaticResource ValidEntryStyle}"
+                Flags="ValidateOnValueChanged"
+                MinimumLength="1"
+                MaximumLength="50" />
+            </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Row="1" Placeholder="Betrag" Text="{Binding EditableIncome.Amount}" >
+            <Entry.Behaviors>
+                <toolkit:NumericValidationBehavior 
+                InvalidStyle="{StaticResource InvalidEntryStyle}"
+                ValidStyle="{StaticResource ValidEntryStyle}"
+                Flags="ValidateOnValueChanged"
+                MinimumValue="0.01"
+                MaximumDecimalPlaces="2" />
+            </Entry.Behaviors>
+        </Entry>
         <Picker Grid.Row="2"   Title="Zeitintervall"  ItemsSource="{Binding TimeIntervalItems}" SelectedItem="{Binding EditableIncome.TimeInterval}" />
 
         <VerticalStackLayout Grid.Row="3" Spacing="10" >
-            <Button HeightRequest="50" Text="Speichern" VerticalOptions="Center" Command="{Binding SaveCurrentIncomeCommand}" />
+            <Button HeightRequest="50" Text="Speichern" VerticalOptions="Center" Command="{Binding SaveCurrentIncomeCommand}" IsEnabled="{Binding IsSaveEnabled}" />
             <Button HeightRequest="50" Text="Abbrechen" VerticalOptions="Center" Command="{Binding CancelCommand}" />
         </VerticalStackLayout>
     </Grid>
