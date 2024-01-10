@@ -4,12 +4,26 @@
 
         private readonly ISender _mediator;
         private bool isNewIncome;
+
+        [ObservableProperty]
+        ObservableCollection<string> timeIntervalItems;
+        private readonly Dictionary<string, string> timeIntervalMapping;
+
         public ICommand PageAppearingCommand { get; }
 
         public IncomeViewModel(ISender mediator)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             PageAppearingCommand = new Command(async () => await GetIncomeAsync());
+
+            timeIntervalMapping = new Dictionary<string, string>{
+                { TimeIntervalEnum.Daily.ToString(), "Täglich" },
+                { TimeIntervalEnum.Weekly.ToString(), "Wöchentlich" },
+                { TimeIntervalEnum.Monthly.ToString(), "Monatlich" },
+                { TimeIntervalEnum.Yearly.ToString(), "Jährlich" }
+             };
+
+            timeIntervalItems = new ObservableCollection<string>([.. timeIntervalMapping.Values]);
         }
 
         [ObservableProperty]

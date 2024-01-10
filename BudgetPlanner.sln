@@ -3,13 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetPlanner.Presentation", "BudgetPlanner.Presentation\BudgetPlanner.Presentation.csproj", "{9BC58B17-F251-4F28-B92B-57DDB106D66E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BudgetPlanner.Presentation", "BudgetPlanner.Presentation\BudgetPlanner.Presentation.csproj", "{9BC58B17-F251-4F28-B92B-57DDB106D66E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BudgetPlanner.Application", "BudgetPlanner.Application\BudgetPlanner.Application.csproj", "{11C43072-19EB-4E15-AB9D-A8836135E0F2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BudgetPlanner.Domain", "BudgetPlanner.Domain\BudgetPlanner.Domain.csproj", "{2E3A7252-70F7-46B3-89C6-9DCD15F89718}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BudgetPlanner.Infrastructure", "BudgetPlanner.Infrastructure\BudgetPlanner.Infrastructure.csproj", "{7FE36A6E-D3C8-420C-9F8A-14AC43CF16A9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{1868642C-3B89-42F6-86A9-994B70D42956}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetPlanner.Application.Tests", "BudgetPlanner.Application.Tests\BudgetPlanner.Application.Tests.csproj", "{81937845-47C5-412E-95BB-55A275EA8C1D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,9 +39,16 @@ Global
 		{7FE36A6E-D3C8-420C-9F8A-14AC43CF16A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FE36A6E-D3C8-420C-9F8A-14AC43CF16A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7FE36A6E-D3C8-420C-9F8A-14AC43CF16A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81937845-47C5-412E-95BB-55A275EA8C1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81937845-47C5-412E-95BB-55A275EA8C1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81937845-47C5-412E-95BB-55A275EA8C1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81937845-47C5-412E-95BB-55A275EA8C1D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{81937845-47C5-412E-95BB-55A275EA8C1D} = {1868642C-3B89-42F6-86A9-994B70D42956}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A50037D1-BF28-44D5-B1BB-0E5E8C05DA25}

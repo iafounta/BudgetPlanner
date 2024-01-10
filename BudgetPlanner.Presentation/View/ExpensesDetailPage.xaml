@@ -11,10 +11,10 @@
 
         <Entry Grid.Row="0" Placeholder="Name" Text="{Binding EditableExpense.Name}" />
         <Entry Grid.Row="1" Placeholder="Betrag" Text="{Binding EditableExpense.Amount}" />
-        <Entry Grid.Row="2" Placeholder="Zeitintervall" Text="{Binding EditableExpense.TimeInterval}"  />
+        <Picker Grid.Row="2"   Title="Zeitintervall" ItemsSource="{Binding TimeIntervalItems}" SelectedItem="{Binding EditableExpense.TimeInterval}" />
 
         <VerticalStackLayout Grid.Row="3" Spacing="10" >
-        <Button HeightRequest="50" Text="Hinzufügen" VerticalOptions="Center" Command="{Binding SaveCurrentExpenseCommand}" />
+        <Button HeightRequest="50" Text="Speichern" VerticalOptions="Center" Command="{Binding SaveCurrentExpenseCommand}" />
             <Button HeightRequest="50" Text="Abbrechen" VerticalOptions="Center" Command="{Binding CancelCommand}" />
         </VerticalStackLayout>
     </Grid>

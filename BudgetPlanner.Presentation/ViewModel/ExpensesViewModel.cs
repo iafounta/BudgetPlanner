@@ -6,10 +6,23 @@ public partial class ExpensesViewModel : ObservableObject
     private bool isNewExpense;
     public ICommand PageAppearingCommand { get; }
 
+    [ObservableProperty]
+    ObservableCollection<string> timeIntervalItems;
+    private readonly Dictionary<string, string> timeIntervalMapping;
+
     public ExpensesViewModel(ISender mediator)
     {
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         PageAppearingCommand = new Command(async () => await GetExpensesAsync());
+
+        timeIntervalMapping = new Dictionary<string, string>{
+                { TimeIntervalEnum.Daily.ToString(), "Täglich" },
+                { TimeIntervalEnum.Weekly.ToString(), "Wöchentlich" },
+                { TimeIntervalEnum.Monthly.ToString(), "Monatlich" },
+                { TimeIntervalEnum.Yearly.ToString(), "Jährlich" }
+             };
+
+        timeIntervalItems = new ObservableCollection<string>([.. timeIntervalMapping.Values]);
     }
 
     [ObservableProperty]
