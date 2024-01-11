@@ -1,5 +1,4 @@
-﻿
-namespace BudgetPlanner.Application.UseCases.Income;
+﻿namespace BudgetPlanner.Application.UseCases.Income;
 
 public class GetAllIncomes : IQuery<Result<List<Domain.Entities.Income>>>
 {

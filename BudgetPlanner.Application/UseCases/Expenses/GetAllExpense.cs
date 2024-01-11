@@ -1,5 +1,4 @@
-﻿
-namespace BudgetPlanner.Application.UseCases.Expenses;
+﻿namespace BudgetPlanner.Application.UseCases.Expenses;
 
 public class GetAllExpense : IQuery<Result<List<Expense>>>
 {

@@ -1,7 +1,4 @@
-﻿
-using BudgetPlanner.Domain.Results;
-
-namespace BudgetPlanner.Application.UseCases.Expenses;
+﻿namespace BudgetPlanner.Application.UseCases.Expenses;
 
 public class AddExpense : ICommand<Result<int>>
 {
