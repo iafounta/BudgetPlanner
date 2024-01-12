@@ -57,7 +57,7 @@ jobs:
 
     - name: Test
       shell: pwsh
-      run: dotnet test --verbosity normal
+      run: dotnet test --no-restore --verbosity normal
 
 # ***************************** #
 # >>>>>>> Windows Build <<<<<<< #
@@ -101,7 +101,7 @@ jobs:
 
     - name: Test
       shell: pwsh
-      run: dotnet test --verbosity normal
+      run: dotnet test --no-restore --verbosity normal
 
 # ************************* #
 # >>>>>>> iOS Build <<<<<<< #
@@ -143,7 +143,7 @@ jobs:
 
     - name: Test
       shell: pwsh
-      run: dotnet test --verbosity normal
+      run: dotnet test --no-restore --verbosity normal
 
 # ********************************* #
 # >>>>>>> MacCatalyst Build <<<<<<< #
@@ -185,4 +185,4 @@ jobs:
 
     - name: Test
       shell: pwsh
-      run: dotnet test --verbosity normal
+      run: dotnet test --no-restore --verbosity normal
