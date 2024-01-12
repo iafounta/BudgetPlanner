@@ -49,7 +49,7 @@ jobs:
 
     - name: Restore NuGet packages
       shell: pwsh
-      run: dotnet restore ${{ env.PROJECT_PATH }}
+      run: dotnet restore
 
     - name: Build Maui Android project
       shell: pwsh
@@ -57,7 +57,7 @@ jobs:
 
     - name: Test
       shell: pwsh
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test --no-build --verbosity normal
 
 # ***************************** #
 # >>>>>>> Windows Build <<<<<<< #
@@ -93,7 +93,7 @@ jobs:
 
     - name: Restore NuGet packages
       shell: pwsh
-      run: dotnet restore ${{ env.PROJECT_PATH }}
+      run: dotnet restore
 
     - name: Build Maui WinUI project
       shell: pwsh
@@ -101,7 +101,7 @@ jobs:
 
     - name: Test
       shell: pwsh
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test --no-build --verbosity norma
 
 # ************************* #
 # >>>>>>> iOS Build <<<<<<< #
@@ -135,7 +135,7 @@ jobs:
 
     - name: Restore NuGet packages
       shell: bash
-      run: dotnet restore ${{ env.PROJECT_PATH }}
+      run: dotnet restore
 
     - name: Build MAUI iOS project
       shell: bash
@@ -143,7 +143,7 @@ jobs:
 
     - name: Test
       shell: pwsh
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test --no-build --verbosity norma
 
 # ********************************* #
 # >>>>>>> MacCatalyst Build <<<<<<< #
@@ -177,7 +177,7 @@ jobs:
 
     - name: Restore NuGet packages
       shell: bash
-      run: dotnet restore ${{ env.PROJECT_PATH }}
+      run: dotnet restore
     
     - name: Build MAUI MacCatalyst project
       shell: bash
@@ -185,4 +185,4 @@ jobs:
 
     - name: Test
       shell: pwsh
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test --no-build --verbosity norma
