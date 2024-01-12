@@ -55,6 +55,10 @@ jobs:
       shell: pwsh
       run: dotnet build ${{ env.PROJECT_PATH }} -c Debug -f net8.0-android --no-restore -p:PublishTrimmed=False
 
+    - name: Test
+      shell: pwsh
+      run: dotnet test --no-restore --verbosity normal
+
 # ***************************** #
 # >>>>>>> Windows Build <<<<<<< #
 # ***************************** #
@@ -95,6 +99,10 @@ jobs:
       shell: pwsh
       run: dotnet build ${{ env.PROJECT_PATH }} -c Debug -f net8.0-windows10.0.19041.0 -p:PublishTrimmed=False
 
+    - name: Test
+      shell: pwsh
+      run: dotnet test --no-restore --verbosity normal
+
 # ************************* #
 # >>>>>>> iOS Build <<<<<<< #
 # ************************* #
@@ -133,6 +141,10 @@ jobs:
       shell: bash
       run: dotnet build ${{ env.PROJECT_PATH }} -c Debug -f net8.0-ios --no-restore -p:PublishTrimmed=True -p:MtouchLink=SdkOnly
 
+    - name: Test
+      shell: pwsh
+      run: dotnet test --no-restore --verbosity normal
+
 # ********************************* #
 # >>>>>>> MacCatalyst Build <<<<<<< #
 # ********************************* #
@@ -170,3 +182,7 @@ jobs:
     - name: Build MAUI MacCatalyst project
       shell: bash
       run: dotnet build ${{ env.PROJECT_PATH }} -f net8.0-maccatalyst -c Debug --no-restore -p:PublishTrimmed=True -p:MtouchLink=SdkOnly
+
+    - name: Test
+      shell: pwsh
+      run: dotnet test --no-restore --verbosity normal
