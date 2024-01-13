@@ -110,7 +110,8 @@ public partial class OverviewViewModel : ObservableObject {
                             ValueLabel = saldo.ToString(),
                             Color = SKColor.Parse("#b455b6")
                         },
-                 }
+                 },
+                LabelTextSize = 35
             };
         }
         else if (SelectedPeriod == CALC_YEAR)
@@ -152,8 +153,9 @@ public partial class OverviewViewModel : ObservableObject {
                             ValueLabel = saldo.ToString(),
                             Color = SKColor.Parse("#b455b6")
                         },
-                 }
-            }; var a = expensesItems;
+                 },
+                LabelTextSize = 35
+            };
         }
     }
 
