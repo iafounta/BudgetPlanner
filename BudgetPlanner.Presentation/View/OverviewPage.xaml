@@ -15,12 +15,9 @@
     </ContentPage.Behaviors>
 
     <ScrollView>
-
-        <VerticalStackLayout Spacing="20" >
-            <Picker  Title="Zeitraum eingeben..." SelectedIndex="0"   ItemsSource="{Binding PeriodItems}" SelectedItem="{Binding SelectedPeriod}" />
-            <micro:ChartView Chart="{Binding OverviewChart}" HeightRequest="260" />
-            <micro:ChartView Chart="{Binding ExpsensesChart}" HeightRequest="260" />
-            <micro:ChartView Chart="{Binding IncomeChart}" HeightRequest="260" />
+        <VerticalStackLayout>
+            <Picker Grid.Row="2"   Title="Zeitintervall" SelectedIndex="0"    ItemsSource="{Binding PeriodItems}" SelectedItem="{Binding SelectedPeriod}" />
+            <micro:ChartView Chart="{Binding OverviewChart}" HeightRequest="500" />
         </VerticalStackLayout>
 
     </ScrollView>
