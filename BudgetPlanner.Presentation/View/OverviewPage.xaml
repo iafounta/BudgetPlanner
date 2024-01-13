@@ -2,15 +2,26 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BudgetPlanner.Presentation.View.OverviewPage"
+              xmlns:behaviors="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:micro="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
              xmlns:viewmodel="clr-namespace:BudgetPlanner.Presentation.ViewModel"
              x:DataType="viewmodel:OverviewViewModel"
              xmlns:local="clr-namespace:BudgetPlanner.Presentation.Model"
              Title="OverviewPage">
+
+    <ContentPage.Behaviors>
+        <behaviors:EventToCommandBehavior EventName="Appearing" Command="{Binding InitializeExpensesAndIncomesCommand}">
+        </behaviors:EventToCommandBehavior>
+    </ContentPage.Behaviors>
+
     <ScrollView>
-        <VerticalStackLayout>
-            <Picker Grid.Row="2"   Title="Zeitintervall" SelectedIndex="0"    ItemsSource="{Binding PeriodItems}" SelectedItem="{Binding SelectedPeriod}" />
-            <micro:ChartView Chart="{Binding OverviewChart}" HeightRequest="500" />
+
+        <VerticalStackLayout Spacing="20" >
+            <Picker  Title="Zeitraum eingeben..." SelectedIndex="0"   ItemsSource="{Binding PeriodItems}" SelectedItem="{Binding SelectedPeriod}" />
+            <micro:ChartView Chart="{Binding OverviewChart}" HeightRequest="260" />
+            <micro:ChartView Chart="{Binding ExpsensesChart}" HeightRequest="260" />
+            <micro:ChartView Chart="{Binding IncomeChart}" HeightRequest="260" />
         </VerticalStackLayout>
+
     </ScrollView>
 </ContentPage>

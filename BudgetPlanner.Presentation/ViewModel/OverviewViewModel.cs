@@ -1,5 +1,5 @@
 ﻿using BudgetPlanner.Application.UseCases.Income;
-using BudgetPlanner.Domain.Entities;
+using BudgetPlanner.Presentation.Helpers;
 using Microcharts;
 using SkiaSharp;
 
@@ -8,8 +8,11 @@ namespace BudgetPlanner.Presentation.ViewModel
     public partial class OverviewViewModel : ObservableObject {
         private readonly ISender _mediator;
 
-        private const string CALC_MONTH = "Nach Monat";
-        private const string CALC_YEAR = "Nach Jahr";
+        private const string CALC_MONTH = "Monatlich";
+        private const string CALC_YEAR = "Jährlich";
+        private List<ExpensesModel> expensesItems;
+        private List<IncomeModel> incomeItems;
+
 
         [ObservableProperty]
         string selectedPeriod;
@@ -20,20 +23,35 @@ namespace BudgetPlanner.Presentation.ViewModel
         [ObservableProperty]
         Chart overviewChart;
 
+        [ObservableProperty]
+        Chart expsensesChart;
+
+        [ObservableProperty]
+        Chart incomeChart;
+
+
 
         public OverviewViewModel(ISender mediator)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
 
-            overviewChart = new BarChart();
-
             periodItems = new ObservableCollection<string>(){
                 CALC_MONTH,
                 CALC_YEAR
             };
+
+            HandlePeriodChangeAsync(CALC_MONTH);
         }
 
-        private async Task<List<ExpensesModel>> GetExpensesAsync(){
+        [RelayCommand]
+        async Task InitializeExpensesAndIncomesAsync()
+        {
+            expensesItems = await GetExpensesAsync();
+            incomeItems = await GetIncomesAsync();
+            HandlePeriodChangeAsync(CALC_MONTH);
+        }
+
+        private async Task<List<ExpensesModel>> GetExpensesAsync() {
             var result = await _mediator.Send(new GetAllExpense());
             if (!result.IsSuccess || result.Value is null)
             {
@@ -52,7 +70,7 @@ namespace BudgetPlanner.Presentation.ViewModel
         private async Task<List<IncomeModel>> GetIncomesAsync()
         {
             var result = await _mediator.Send(new GetAllIncomes());
-            if (!result.IsSuccess || result.Value is null){
+            if (!result.IsSuccess || result.Value is null) {
                 return [];
             }
 
@@ -68,77 +86,48 @@ namespace BudgetPlanner.Presentation.ViewModel
 
         partial void OnSelectedPeriodChanged(string value)
         {
-            _ = HandlePeriodChangeAsync(value);
+            HandlePeriodChangeAsync(value);
         }
 
-        private async Task HandlePeriodChangeAsync(string selectedPeriod)
+        private void HandlePeriodChangeAsync(string selectedPeriod)
         {
-            var expensesItems =  await GetExpensesAsync();
-            var incomeItems = await GetIncomesAsync();
 
             if (SelectedPeriod == CALC_MONTH)
             {
-                float expensesAmount = 0;
-                float incomesAmount = 0;
-                float saldo = 0;
-
-                foreach (var expense in expensesItems)
-                {
-                    expensesAmount += CalculateAmountPerMonth(expense.TimeInterval, expense.Amount);
-                }
-
-                foreach (var income in incomeItems)
-                {
-                    incomesAmount += CalculateAmountPerMonth(income.TimeInterval, income.Amount);
-                }
-
-                saldo = incomesAmount - expensesAmount;
-
-                OverviewChart = new BarChart()
-                {
-                    Entries = new[] {
-                            new ChartEntry(incomesAmount)
-                            {
-                                Label = "Einahmen",
-                                ValueLabel = incomesAmount.ToString(),
-                                Color = SKColor.Parse("#2c3e50")
-                            },
-                            new ChartEntry(expensesAmount)
-                            {
-                                Label = "Ausgaben",
-                                ValueLabel = expensesAmount.ToString(),
-                                Color = SKColor.Parse("#77d065")
-                            },
-                            new ChartEntry(saldo)
-                            {
-                                Label = "Saldo",
-                                ValueLabel = saldo.ToString(),
-                                Color = SKColor.Parse("#b455b6")
-                            },
-                     }
-                };
+                UpdateOverviewChartPerMonth();
+                UpdateExpsensesChartPerMonth();
+                UpdateIncomeChartPerMonth();
             }
             else if (SelectedPeriod == CALC_YEAR)
             {
-                float expensesAmount = 0;
-                float incomesAmount = 0;
-                float saldo = 0;
+                UpdateOverviewChartPerYear();
+                UpdateExpsensesChartPerYear();
+                UpdateIncomeChartPerYear();
+            }
+        }
 
-                foreach (var expense in expensesItems)
-                {
-                    expensesAmount += CalculateAmountPerYear(expense.TimeInterval, expense.Amount);
-                }
 
-                foreach (var income in incomeItems)
-                {
-                    incomesAmount += CalculateAmountPerYear(income.TimeInterval, income.Amount);
-                }
+        private void UpdateOverviewChartPerMonth()
+        {
+            float expensesAmount = 0;
+            float incomesAmount = 0;
+            float saldo = 0;
 
-                saldo = incomesAmount - expensesAmount;
+            foreach (var expense in expensesItems)
+            {
+                expensesAmount += CalculateAmountPerMonth(expense.TimeInterval, expense.Amount);
+            }
 
-                OverviewChart = new DonutChart()
-                {
-                    Entries = new[] {
+            foreach (var income in incomeItems)
+            {
+                incomesAmount += CalculateAmountPerMonth(income.TimeInterval, income.Amount);
+            }
+
+            saldo = incomesAmount - expensesAmount;
+
+            OverviewChart = new BarChart()
+            {
+                Entries = new[] {
                             new ChartEntry(incomesAmount)
                             {
                                 Label = "Einahmen",
@@ -158,8 +147,131 @@ namespace BudgetPlanner.Presentation.ViewModel
                                 Color = SKColor.Parse("#b455b6")
                             },
                      }
-                }; var a = expensesItems;
+            };
+        }
+
+        private void UpdateOverviewChartPerYear(){
+            float expensesAmount = 0;
+            float incomesAmount = 0;
+            float saldo = 0;
+
+            foreach (var expense in expensesItems)
+            {
+                expensesAmount += CalculateAmountPerYear(expense.TimeInterval, expense.Amount);
             }
+
+            foreach (var income in incomeItems)
+            {
+                incomesAmount += CalculateAmountPerYear(income.TimeInterval, income.Amount);
+            }
+
+            saldo = incomesAmount - expensesAmount;
+
+            OverviewChart = new DonutChart()
+            {
+                Entries = new[] {
+                            new ChartEntry(incomesAmount)
+                            {
+                                Label = "Einahmen",
+                                ValueLabel = incomesAmount.ToString(),
+                                Color = SKColor.Parse("#2c3e50")
+                            },
+                            new ChartEntry(expensesAmount)
+                            {
+                                Label = "Ausgaben",
+                                ValueLabel = expensesAmount.ToString(),
+                                Color = SKColor.Parse("#77d065")
+                            },
+                            new ChartEntry(saldo)
+                            {
+                                Label = "Saldo",
+                                ValueLabel = saldo.ToString(),
+                                Color = SKColor.Parse("#b455b6")
+                            },
+                     }
+            };
+        }
+
+
+        private void UpdateExpsensesChartPerMonth()
+        {
+            IList<ChartEntry> chartEntries = new List<ChartEntry>();
+            foreach (var expense in expensesItems.OrderByDescending(x => x.Amount))
+            {
+                float monthAmount = CalculateAmountPerMonth(expense.TimeInterval, expense.Amount);
+                chartEntries.Add(new ChartEntry(monthAmount)
+                {
+                    Label = expense.Name,
+                    ValueLabel = expense.Amount.ToString(),
+                    Color = ColorUtilsHelper.GetRandomColor()
+                }) ;
+            }
+
+            ExpsensesChart = new BarChart()
+            {
+                Entries = chartEntries
+            };
+        }
+
+        private void UpdateExpsensesChartPerYear()
+        {
+            IList<ChartEntry> chartEntries = new List<ChartEntry>();
+            foreach (var expense in expensesItems.OrderByDescending(x => x.Amount))
+            {
+                float monthAmount = CalculateAmountPerYear(expense.TimeInterval, expense.Amount);
+                chartEntries.Add(new ChartEntry(monthAmount)
+                {
+                    Label = expense.Name,
+                    ValueLabel = expense.Amount.ToString(),
+                    Color = ColorUtilsHelper.GetRandomColor()
+                });
+            }
+
+            ExpsensesChart = new BarChart()
+            {
+                Entries = chartEntries
+            };
+        }
+
+
+        private void UpdateIncomeChartPerMonth()
+        {
+            IList<ChartEntry> chartEntries = new List<ChartEntry>();
+            foreach (var income in incomeItems.OrderByDescending(x => x.Amount))
+            {
+                float monthAmount = CalculateAmountPerMonth(income.TimeInterval, income.Amount);
+                chartEntries.Add(new ChartEntry(monthAmount)
+                {
+                    Label = income.Name,
+                    ValueLabel = income.Amount.ToString(),
+                    Color = ColorUtilsHelper.GetRandomColor()
+                });
+            }
+
+            IncomeChart = new BarChart()
+            {
+                Entries = chartEntries
+            };
+        }
+
+        private void UpdateIncomeChartPerYear()
+        {
+            IList<ChartEntry> chartEntries = new List<ChartEntry>();
+            foreach (var income in incomeItems.OrderByDescending(x => x.Amount))
+            {
+                float monthAmount = CalculateAmountPerYear(income.TimeInterval, income.Amount);
+                chartEntries.Add(new ChartEntry(monthAmount)
+                {
+                    Label = income.Name,
+                    ValueLabel = income.Amount.ToString(),
+                    Color = ColorUtilsHelper.GetRandomColor()
+                });
+            }
+
+            IncomeChart = new BarChart()
+            {
+                Entries = chartEntries
+            };
         }
 
 

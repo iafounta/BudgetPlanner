@@ -1,6 +1,7 @@
 ﻿using BudgetPlanner.Infrastructure.Interfaces;
 using BudgetPlanner.Presentation.Service;
 using Microcharts.Maui;
+using Microsoft.Extensions.DependencyInjection;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 
 namespace BudgetPlanner.Presentation;
@@ -32,8 +33,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<IncomePage>();
         builder.Services.AddTransient<IncomeDetailPage>();
 
-        builder.Services.AddSingleton<OverviewViewModel>();
-        builder.Services.AddSingleton<OverviewPage>();
+        builder.Services.AddTransient<OverviewViewModel>();
+        builder.Services.AddTransient<OverviewPage>();
 
         builder.Services.AddApplicationServices();
         builder.Services.AddInfrastructureServices(builder.Configuration);
