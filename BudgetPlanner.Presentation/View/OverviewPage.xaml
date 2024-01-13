@@ -7,9 +7,10 @@
              x:DataType="viewmodel:OverviewViewModel"
              xmlns:local="clr-namespace:BudgetPlanner.Presentation.Model"
              Title="OverviewPage">
+    
     <ScrollView>
         <VerticalStackLayout>
-            <Picker Grid.Row="2"   Title="Zeitintervall" SelectedIndex="0"    ItemsSource="{Binding PeriodItems}" SelectedItem="{Binding SelectedPeriod}" />
+            <Picker Grid.Row="2" Title="Zeitintervall" SelectedIndex="0" ItemsSource="{Binding PeriodItems}" SelectedItem="{Binding SelectedPeriod}" />
             <micro:ChartView Chart="{Binding OverviewChart}" HeightRequest="500" />
         </VerticalStackLayout>
     </ScrollView>
