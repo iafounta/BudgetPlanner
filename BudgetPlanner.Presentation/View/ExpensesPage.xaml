@@ -5,7 +5,8 @@
              xmlns:behaviors="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:viewmodel="clr-namespace:BudgetPlanner.Presentation.ViewModel"
              x:DataType="viewmodel:ExpensesViewModel"
-             xmlns:local="clr-namespace:BudgetPlanner.Presentation.Model">
+             xmlns:local="clr-namespace:BudgetPlanner.Presentation.Model"
+ >
 
     <ContentPage.Behaviors>
         <behaviors:EventToCommandBehavior EventName="Appearing" Command="{Binding PageAppearingCommand}">
@@ -22,20 +23,22 @@
         <Button Grid.Column="1" Grid.Row="0" 
                 Text="+"
                 Command="{Binding GoToDetailPageToAddNewExpenseCommand}"
-                WidthRequest="50"
-                HeightRequest="50"
-                CornerRadius="50"
-                HorizontalOptions="End"
-                VerticalOptions="Center"/>
+            WidthRequest="50"
+            HeightRequest="50"
+            CornerRadius="50"
+            HorizontalOptions="End"
+            VerticalOptions="Center"/>
 
         <CollectionView Grid.Row="2" 
                         Grid.ColumnSpan="2"
                         ItemsSource="{Binding ExpensesItems}" 
                         SelectionMode="None">
 
+
             <CollectionView.ItemsLayout>
                 <GridItemsLayout Orientation="Vertical" VerticalItemSpacing="5"  />
             </CollectionView.ItemsLayout>
+
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="local:ExpensesModel">
@@ -51,30 +54,34 @@
                             </SwipeItems>
                         </SwipeView.RightItems>
 
+
                         <Border Padding="5" >
 
-                            <Grid ColumnDefinitions=".50*, .25*, .25*" Padding="0,5">
+
+                                <Grid ColumnDefinitions=".50*, .25*, .25*" Padding="0,5">
 
                                 <Grid.GestureRecognizers>
 
                                     <TapGestureRecognizer  
-                                         Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ExpensesViewModel}}, Path= GoToDetailPageToEditExpenseCommand}" 
-                                         CommandParameter="{Binding .}"  
+                                     Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ExpensesViewModel}}, Path= GoToDetailPageToEditExpenseCommand}" 
+                                     CommandParameter="{Binding .}"  
                                      />
 
                                 </Grid.GestureRecognizers>
+
 
                                 <Label Grid.Column="0" Text="{Binding Name}" FontSize="20" />
                                 <Label Grid.Column="1" Text="{Binding Amount}" TextColor="Red" FontAttributes="Bold" FontSize="20" />
                                 <Label Grid.Column="2" Text="{Binding TimeInterval}" FontSize="15" />
                             </Grid>
-
+                     
                         </Border>
                     </SwipeView>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
 
         </CollectionView>
+
 
     </Grid>
 

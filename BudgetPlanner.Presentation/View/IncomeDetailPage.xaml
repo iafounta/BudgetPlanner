@@ -6,7 +6,6 @@
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:DataType="viewmodel:IncomeViewModel"
              xmlns:local="clr-namespace:BudgetPlanner.Presentation.Model">
-    
     <ContentPage.Resources>
         <Style x:Key="InvalidEntryStyle" TargetType="Entry">
             <Setter Property="TextColor" Value="Red" />
@@ -16,7 +15,7 @@
         </Style>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="50, 50, 50, *" RowSpacing="30" Padding="10">
+    <Grid RowDefinitions="50, 50,50, *" RowSpacing="30" Padding="10">
 
         <Entry Grid.Row="0" Placeholder="Name" Text="{Binding EditableIncome.Name}" >
             <Entry.Behaviors>
@@ -38,7 +37,7 @@
                 MaximumDecimalPlaces="2" />
             </Entry.Behaviors>
         </Entry>
-        <Picker Grid.Row="2" Title="Zeitintervall"  ItemsSource="{Binding TimeIntervalItems}" SelectedItem="{Binding EditableIncome.TimeInterval}" />
+        <Picker Grid.Row="2"   Title="Zeitintervall"  ItemsSource="{Binding TimeIntervalItems}" SelectedItem="{Binding EditableIncome.TimeInterval}" />
 
         <VerticalStackLayout Grid.Row="3" Spacing="10" >
             <Button HeightRequest="50" Text="Speichern" VerticalOptions="Center" Command="{Binding SaveCurrentIncomeCommand}" IsEnabled="{Binding IsSaveEnabled}" />
