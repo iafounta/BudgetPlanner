@@ -146,7 +146,8 @@ namespace BudgetPlanner.Presentation.ViewModel
                                 ValueLabel = saldo.ToString(),
                                 Color = SKColor.Parse("#b455b6")
                             },
-                     }
+                     },
+                LabelTextSize = 35
             };
         }
 
@@ -188,7 +189,8 @@ namespace BudgetPlanner.Presentation.ViewModel
                                 ValueLabel = saldo.ToString(),
                                 Color = SKColor.Parse("#b455b6")
                             },
-                     }
+                     },
+                LabelTextSize = 35
             };
         }
 
@@ -209,7 +211,8 @@ namespace BudgetPlanner.Presentation.ViewModel
 
             ExpsensesChart = new BarChart()
             {
-                Entries = chartEntries
+                Entries = chartEntries,
+                LabelTextSize = 35
             };
         }
 
@@ -229,7 +232,8 @@ namespace BudgetPlanner.Presentation.ViewModel
 
             ExpsensesChart = new BarChart()
             {
-                Entries = chartEntries
+                Entries = chartEntries,
+                 LabelTextSize = 35
             };
         }
 
@@ -250,7 +254,8 @@ namespace BudgetPlanner.Presentation.ViewModel
 
             IncomeChart = new BarChart()
             {
-                Entries = chartEntries
+                Entries = chartEntries,
+                LabelTextSize = 35
             };
         }
 
@@ -270,7 +275,8 @@ namespace BudgetPlanner.Presentation.ViewModel
 
             IncomeChart = new BarChart()
             {
-                Entries = chartEntries
+                Entries = chartEntries,
+                LabelTextSize = 35
             };
         }
 
