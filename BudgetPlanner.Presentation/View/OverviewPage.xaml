@@ -7,7 +7,8 @@
              xmlns:viewmodel="clr-namespace:BudgetPlanner.Presentation.ViewModel"
              x:DataType="viewmodel:OverviewViewModel"
              xmlns:local="clr-namespace:BudgetPlanner.Presentation.Model"
-             Title="OverviewPage">
+             Title="Übersicht" 
+             >
 
     <ContentPage.Behaviors>
         <behaviors:EventToCommandBehavior EventName="Appearing" Command="{Binding InitializeExpensesAndIncomesCommand}">
@@ -16,10 +17,17 @@
 
     <ScrollView>
 
-        <VerticalStackLayout Spacing="20" >
-            <Picker  Title="Zeitraum eingeben..." SelectedIndex="0"   ItemsSource="{Binding PeriodItems}" SelectedItem="{Binding SelectedPeriod}" />
+        <VerticalStackLayout Spacing="20"  Margin="20">
+            <Label Text="Wähle einen Zeitraum..." />
+            <Picker ItemsSource="{Binding PeriodItems}" SelectedItem="{Binding SelectedPeriod}" />
+
+            <Label Text="Übersichtsdiagramm" FontAttributes="Bold"  />
             <micro:ChartView Chart="{Binding OverviewChart}" HeightRequest="260" />
+
+            <Label Text="Ausgabendiagramm" FontAttributes="Bold"  />
             <micro:ChartView Chart="{Binding ExpsensesChart}" HeightRequest="260" />
+
+            <Label Text="Einanhmendiagramm" FontAttributes="Bold" />
             <micro:ChartView Chart="{Binding IncomeChart}" HeightRequest="260" />
         </VerticalStackLayout>
 

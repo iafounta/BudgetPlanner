@@ -6,6 +6,12 @@ using SkiaSharp;
 namespace BudgetPlanner.Presentation.ViewModel
 {
     public partial class OverviewViewModel : ObservableObject {
+
+        private const float WeeksPerMonth = 4.34812141f;
+        private const float DaysPerMonth = 30.4368499f;
+        private const float WeeksPerYear = 52.177457f;
+        private const float DaysPerYear = 365f;
+
         private readonly ISender _mediator;
 
         private const string CALC_MONTH = "Monatlich";
@@ -29,8 +35,6 @@ namespace BudgetPlanner.Presentation.ViewModel
         [ObservableProperty]
         Chart incomeChart;
 
-
-
         public OverviewViewModel(ISender mediator)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
@@ -39,8 +43,6 @@ namespace BudgetPlanner.Presentation.ViewModel
                 CALC_MONTH,
                 CALC_YEAR
             };
-
-            HandlePeriodChangeAsync(CALC_MONTH);
         }
 
         [RelayCommand]
@@ -48,7 +50,7 @@ namespace BudgetPlanner.Presentation.ViewModel
         {
             expensesItems = await GetExpensesAsync();
             incomeItems = await GetIncomesAsync();
-            HandlePeriodChangeAsync(CALC_MONTH);
+            SelectedPeriod = CALC_MONTH;
         }
 
         private async Task<List<ExpensesModel>> GetExpensesAsync() {
@@ -107,93 +109,48 @@ namespace BudgetPlanner.Presentation.ViewModel
         }
 
 
+        private void UpdateOverviewChart(Func<string, float, float> calculateAmount)
+        {
+            float expensesAmount = expensesItems.Sum(expense => calculateAmount(expense.TimeInterval, expense.Amount));
+            float incomesAmount = incomeItems.Sum(income => calculateAmount(income.TimeInterval, income.Amount));
+            float saldo = incomesAmount - expensesAmount;
+
+            OverviewChart = new PieChart()
+            {
+                Entries = new[]
+                {
+            new ChartEntry(incomesAmount)
+            {
+                Label = "Einahmen",
+                ValueLabel = incomesAmount.ToString(),
+                Color = SKColor.Parse("#2c3e50")
+            },
+            new ChartEntry(expensesAmount)
+            {
+                Label = "Ausgaben",
+                ValueLabel = expensesAmount.ToString(),
+                Color = SKColor.Parse("#77d065")
+            },
+            new ChartEntry(saldo)
+            {
+                Label = "Saldo",
+                ValueLabel = saldo.ToString(),
+                Color = SKColor.Parse("#b455b6")
+            },
+        },
+                LabelTextSize = 35
+            };
+        }
+
         private void UpdateOverviewChartPerMonth()
         {
-            float expensesAmount = 0;
-            float incomesAmount = 0;
-            float saldo = 0;
-
-            foreach (var expense in expensesItems)
-            {
-                expensesAmount += CalculateAmountPerMonth(expense.TimeInterval, expense.Amount);
-            }
-
-            foreach (var income in incomeItems)
-            {
-                incomesAmount += CalculateAmountPerMonth(income.TimeInterval, income.Amount);
-            }
-
-            saldo = incomesAmount - expensesAmount;
-
-            OverviewChart = new BarChart()
-            {
-                Entries = new[] {
-                            new ChartEntry(incomesAmount)
-                            {
-                                Label = "Einahmen",
-                                ValueLabel = incomesAmount.ToString(),
-                                Color = SKColor.Parse("#2c3e50")
-                            },
-                            new ChartEntry(expensesAmount)
-                            {
-                                Label = "Ausgaben",
-                                ValueLabel = expensesAmount.ToString(),
-                                Color = SKColor.Parse("#77d065")
-                            },
-                            new ChartEntry(saldo)
-                            {
-                                Label = "Saldo",
-                                ValueLabel = saldo.ToString(),
-                                Color = SKColor.Parse("#b455b6")
-                            },
-                     },
-                LabelTextSize = 35
-            };
+            UpdateOverviewChart(CalculateAmountPerMonth);
         }
 
-        private void UpdateOverviewChartPerYear(){
-            float expensesAmount = 0;
-            float incomesAmount = 0;
-            float saldo = 0;
-
-            foreach (var expense in expensesItems)
-            {
-                expensesAmount += CalculateAmountPerYear(expense.TimeInterval, expense.Amount);
-            }
-
-            foreach (var income in incomeItems)
-            {
-                incomesAmount += CalculateAmountPerYear(income.TimeInterval, income.Amount);
-            }
-
-            saldo = incomesAmount - expensesAmount;
-
-            OverviewChart = new DonutChart()
-            {
-                Entries = new[] {
-                            new ChartEntry(incomesAmount)
-                            {
-                                Label = "Einahmen",
-                                ValueLabel = incomesAmount.ToString(),
-                                Color = SKColor.Parse("#2c3e50")
-                            },
-                            new ChartEntry(expensesAmount)
-                            {
-                                Label = "Ausgaben",
-                                ValueLabel = expensesAmount.ToString(),
-                                Color = SKColor.Parse("#77d065")
-                            },
-                            new ChartEntry(saldo)
-                            {
-                                Label = "Saldo",
-                                ValueLabel = saldo.ToString(),
-                                Color = SKColor.Parse("#b455b6")
-                            },
-                     },
-                LabelTextSize = 35
-            };
+        private void UpdateOverviewChartPerYear()
+        {
+            UpdateOverviewChart(CalculateAmountPerYear);
         }
-
 
         private void UpdateExpsensesChartPerMonth()
         {
@@ -204,7 +161,7 @@ namespace BudgetPlanner.Presentation.ViewModel
                 chartEntries.Add(new ChartEntry(monthAmount)
                 {
                     Label = expense.Name,
-                    ValueLabel = expense.Amount.ToString(),
+                    ValueLabel = monthAmount.ToString(),
                     Color = ColorUtilsHelper.GetRandomColor()
                 }) ;
             }
@@ -221,11 +178,11 @@ namespace BudgetPlanner.Presentation.ViewModel
             IList<ChartEntry> chartEntries = new List<ChartEntry>();
             foreach (var expense in expensesItems.OrderByDescending(x => x.Amount))
             {
-                float monthAmount = CalculateAmountPerYear(expense.TimeInterval, expense.Amount);
-                chartEntries.Add(new ChartEntry(monthAmount)
+                float yearAmount = CalculateAmountPerYear(expense.TimeInterval, expense.Amount);
+                chartEntries.Add(new ChartEntry(yearAmount)
                 {
                     Label = expense.Name,
-                    ValueLabel = expense.Amount.ToString(),
+                    ValueLabel = yearAmount.ToString(),
                     Color = ColorUtilsHelper.GetRandomColor()
                 });
             }
@@ -247,7 +204,7 @@ namespace BudgetPlanner.Presentation.ViewModel
                 chartEntries.Add(new ChartEntry(monthAmount)
                 {
                     Label = income.Name,
-                    ValueLabel = income.Amount.ToString(),
+                    ValueLabel = monthAmount.ToString(),
                     Color = ColorUtilsHelper.GetRandomColor()
                 });
             }
@@ -264,11 +221,11 @@ namespace BudgetPlanner.Presentation.ViewModel
             IList<ChartEntry> chartEntries = new List<ChartEntry>();
             foreach (var income in incomeItems.OrderByDescending(x => x.Amount))
             {
-                float monthAmount = CalculateAmountPerYear(income.TimeInterval, income.Amount);
-                chartEntries.Add(new ChartEntry(monthAmount)
+                float yearAmount = CalculateAmountPerYear(income.TimeInterval, income.Amount);
+                chartEntries.Add(new ChartEntry(yearAmount)
                 {
                     Label = income.Name,
-                    ValueLabel = income.Amount.ToString(),
+                    ValueLabel = yearAmount.ToString(),
                     Color = ColorUtilsHelper.GetRandomColor()
                 });
             }
@@ -283,47 +240,36 @@ namespace BudgetPlanner.Presentation.ViewModel
 
         private float CalculateAmountPerMonth(string timeInterval, float amount)
         {
-
-            if (timeInterval == "Jährlich")
+            switch (timeInterval)
             {
-                return amount / 12;
+                case "Jährlich":
+                    return amount / 12;
+                case "Monatlich":
+                    return amount;
+                case "Wöchentlich":
+                    return amount * WeeksPerMonth;
+                case "Täglich":
+                    return amount * DaysPerMonth;
+                default:
+                    return amount;
             }
-            else if (timeInterval == "Monatlich")
-            {
-                return amount;
-            }
-            else if (timeInterval == "Wöchentlich")
-            {
-                return (float)(amount * 4.34812141);
-            }
-            else if (timeInterval == "Täglich")
-            {
-                return (float)(amount * 30.4368499);
-            }
-            return amount;
         }
 
         private float CalculateAmountPerYear(string timeInterval, float amount)
         {
-
-            if (timeInterval == "Jährlich")
+            switch (timeInterval)
             {
-                return amount;
+                case "Jährlich":
+                    return amount;
+                case "Monatlich":
+                    return amount * 12;
+                case "Wöchentlich":
+                    return amount * WeeksPerYear;
+                case "Täglich":
+                    return amount * DaysPerYear;
+                default:
+                    return amount;
             }
-            else if (timeInterval == "Monatlich")
-            {
-                return amount * 12;
-            }
-            else if (timeInterval == "Wöchentlich")
-            {
-                return (float)(amount *  52.177457);
-            }
-            else if (timeInterval == "Täglich")
-            {
-                return amount * 365;
-            }
-            return amount;
         }
-
     }
 }

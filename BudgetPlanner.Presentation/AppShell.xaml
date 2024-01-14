@@ -14,7 +14,7 @@
         <ShellContent Title="Einnahmen"
                      Icon="income.png" 
                      ContentTemplate="{DataTemplate view:IncomePage}" />
-        <ShellContent Title="Ausgabe"
+        <ShellContent Title="Ausgaben"
                      Icon="expenses.png" 
                      ContentTemplate="{DataTemplate view:ExpensesPage}" />
         <ShellContent Title="Übersicht"

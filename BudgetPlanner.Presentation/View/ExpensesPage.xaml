@@ -14,11 +14,11 @@
     </ContentPage.Behaviors>
 
     <Grid 
-        RowDefinitions=" 50, *"
+        RowDefinitions=" 50, 30, *"
         ColumnDefinitions=".75*, .25*"
         Padding="10"
-        RowSpacing="10"
-        ColumnSpacing="10">
+        RowSpacing="5"
+        ColumnSpacing="20">
 
         <Button Grid.Column="1" Grid.Row="0" 
                 Text="+"
@@ -28,6 +28,9 @@
             CornerRadius="50"
             HorizontalOptions="End"
             VerticalOptions="Center"/>
+        
+        <Label Grid.Row="1" HorizontalTextAlignment="Center" Text="Liste mit Ausgaben" FontAttributes="Bold" />
+
 
         <CollectionView Grid.Row="2" 
                         Grid.ColumnSpan="2"
@@ -56,7 +59,9 @@
 
 
                         <Border Padding="5" >
-
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="10"/>
+                            </Border.StrokeShape>
 
                                 <Grid ColumnDefinitions=".50*, .25*, .25*" Padding="0,5">
 
