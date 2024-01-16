@@ -88,6 +88,7 @@ namespace BudgetPlanner.Presentation.ViewModel
 
         partial void OnSelectedPeriodChanged(string value)
         {
+
             HandlePeriodChangeAsync(value);
         }
 
@@ -144,16 +145,32 @@ namespace BudgetPlanner.Presentation.ViewModel
 
         private void UpdateOverviewChartPerMonth()
         {
+            if(expensesItems.Count == 0 && incomeItems.Count == 0) {
+                OverviewChart = new PieChart();
+                return; 
+            }
             UpdateOverviewChart(CalculateAmountPerMonth);
         }
 
         private void UpdateOverviewChartPerYear()
         {
+            if (expensesItems.Count == 0 && incomeItems.Count == 0)
+            {
+                OverviewChart = new PieChart();
+                return;
+            }
+
             UpdateOverviewChart(CalculateAmountPerYear);
         }
 
         private void UpdateExpsensesChartPerMonth()
         {
+            if (expensesItems.Count == 0)
+            {
+                ExpsensesChart = new BarChart();
+                return;
+            }
+
             IList<ChartEntry> chartEntries = new List<ChartEntry>();
             foreach (var expense in expensesItems.OrderByDescending(x => x.Amount))
             {
@@ -175,6 +192,11 @@ namespace BudgetPlanner.Presentation.ViewModel
 
         private void UpdateExpsensesChartPerYear()
         {
+            if (expensesItems.Count == 0)
+            {
+                ExpsensesChart = new BarChart();
+                return;
+            }
             IList<ChartEntry> chartEntries = new List<ChartEntry>();
             foreach (var expense in expensesItems.OrderByDescending(x => x.Amount))
             {
@@ -197,6 +219,11 @@ namespace BudgetPlanner.Presentation.ViewModel
 
         private void UpdateIncomeChartPerMonth()
         {
+            if(incomeItems.Count == 0) { 
+                IncomeChart = new BarChart();
+                return; 
+            }
+
             IList<ChartEntry> chartEntries = new List<ChartEntry>();
             foreach (var income in incomeItems.OrderByDescending(x => x.Amount))
             {
@@ -218,6 +245,11 @@ namespace BudgetPlanner.Presentation.ViewModel
 
         private void UpdateIncomeChartPerYear()
         {
+            if (incomeItems.Count == 0)
+            {
+                IncomeChart = new BarChart();
+                return;
+            }
             IList<ChartEntry> chartEntries = new List<ChartEntry>();
             foreach (var income in incomeItems.OrderByDescending(x => x.Amount))
             {

@@ -27,7 +27,7 @@
             <Label Text="Ausgabendiagramm" FontAttributes="Bold"  />
             <micro:ChartView Chart="{Binding ExpsensesChart}" HeightRequest="260" />
 
-            <Label Text="Einanhmendiagramm" FontAttributes="Bold" />
+            <Label Text="Einnahmendiagramm" FontAttributes="Bold" />
             <micro:ChartView Chart="{Binding IncomeChart}" HeightRequest="260" />
         </VerticalStackLayout>
 
