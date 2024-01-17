@@ -24,6 +24,9 @@ public static class MauiProgram
 #if DEBUG
 		builder.Logging.AddDebug();
 #endif
+        builder.Services.AddApplicationServices();
+        builder.Services.AddInfrastructureServices(builder.Configuration);
+        builder.Services.AddSingleton<IDatabasePathProvider, DatabasePathProvider>();
 
         builder.Services.AddSingleton<ExpensesViewModel>();
         builder.Services.AddSingleton<ExpensesPage>();
@@ -36,9 +39,7 @@ public static class MauiProgram
         builder.Services.AddTransient<OverviewViewModel>();
         builder.Services.AddTransient<OverviewPage>();
 
-        builder.Services.AddApplicationServices();
-        builder.Services.AddInfrastructureServices(builder.Configuration);
-        builder.Services.AddSingleton<IDatabasePathProvider, DatabasePathProvider>();
+
 
         return builder.Build();
     }

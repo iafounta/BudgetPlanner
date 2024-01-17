@@ -6,8 +6,8 @@ public static class DependencyInjection
     {
 
         // Repositories
-        services.AddTransient<IExpenseRepository, ExpenseRepository>();
-        services.AddTransient<IIncomeRepository, IncomeRepository>();
+        services.AddSingleton<IExpenseRepository, ExpenseRepository>();
+        services.AddSingleton<IIncomeRepository, IncomeRepository>();
         services.AddAutoMapper(typeof(MappingProfile));
         return services;
     }

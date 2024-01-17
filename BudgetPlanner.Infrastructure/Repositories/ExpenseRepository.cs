@@ -6,25 +6,37 @@ namespace BudgetPlanner.Infrastructure.Repositories;
 public class ExpenseRepository : IExpenseRepository
 {
     private readonly string databasePath;
-    private readonly SQLiteAsyncConnection database;
+    private  SQLiteAsyncConnection database;
     private const SQLiteOpenFlags Flags = SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create | SQLiteOpenFlags.SharedCache;
     private readonly IMapper mapper;
 
     public ExpenseRepository(IDatabasePathProvider pathProvider, IMapper mapper)
     {
         databasePath = pathProvider.GetDatabasePath();
-        database = new SQLiteAsyncConnection(databasePath, Flags);
-        database.CreateTableAsync<ExpenseDBEntity>().Wait();
+        //database = new SQLiteAsyncConnection(databasePath, Flags);
+        //database.CreateTableAsync<ExpenseDBEntity>().Wait();
         this.mapper = mapper;
     }
 
+
+    async Task Init()
+    {
+        if (database is not null)
+            return;
+
+        database = new SQLiteAsyncConnection(databasePath, Flags);
+        await database.CreateTableAsync<ExpenseDBEntity>();
+    }
+
     public async Task<Expense> GetOneExpenseAsync(int id) {
+        await Init();
         ExpenseDBEntity a = await database.Table<ExpenseDBEntity>().FirstOrDefaultAsync(x => x.Id == id);
         return mapper.Map<Expense>(a);
     }
 
     public async Task<List<Expense>> GetExpensesAsync()
     {
+        await Init();
         List<ExpenseDBEntity> expenseDbEntityList = await database.Table<ExpenseDBEntity>().ToListAsync();
         var expenses = expenseDbEntityList.Select(item => mapper.Map<Expense>(item)).ToList();
         return expenses;
@@ -32,6 +44,7 @@ public class ExpenseRepository : IExpenseRepository
 
     public async Task<int> SaveExpenseAsync(Expense item)
     {
+        await Init();
         ExpenseDBEntity expenseDbEntity = mapper.Map<ExpenseDBEntity>(item);
         bool isItemExisting = false;
 
@@ -53,8 +66,9 @@ public class ExpenseRepository : IExpenseRepository
 
     }
 
-    public Task<int> DeleteExpenseAsync(int id)
+    public async Task<int> DeleteExpenseAsync(int id)
     {
-        return database.DeleteAsync<ExpenseDBEntity>(id);
+        await Init();
+        return await database.DeleteAsync<ExpenseDBEntity>(id);
     }
 }
