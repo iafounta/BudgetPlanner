@@ -1,4 +1,4 @@
-﻿namespace BudgetPlanner.Presentation.ViewModel
+namespace BudgetPlanner.Presentation.ViewModel
 {
     public partial class OverviewViewModel : ObservableObject {
 
@@ -48,6 +48,7 @@
                 expensesItems = await GetExpensesAsync();
                 incomeItems = await GetIncomesAsync();
                 SelectedPeriod = CALC_MONTH;
+                HandlePeriodChangeAsync(SelectedPeriod);
             }
             catch (Exception ex)
             {
