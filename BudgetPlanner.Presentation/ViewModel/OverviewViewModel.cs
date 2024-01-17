@@ -1,9 +1,4 @@
-﻿using BudgetPlanner.Application.UseCases.Income;
-using BudgetPlanner.Presentation.Helpers;
-using Microcharts;
-using SkiaSharp;
-
-namespace BudgetPlanner.Presentation.ViewModel
+﻿namespace BudgetPlanner.Presentation.ViewModel
 {
     public partial class OverviewViewModel : ObservableObject {
 
@@ -48,9 +43,16 @@ namespace BudgetPlanner.Presentation.ViewModel
         [RelayCommand]
         async Task InitializeExpensesAndIncomesAsync()
         {
-            expensesItems = await GetExpensesAsync();
-            incomeItems = await GetIncomesAsync();
-            SelectedPeriod = CALC_MONTH;
+            try
+            {
+                expensesItems = await GetExpensesAsync();
+                incomeItems = await GetIncomesAsync();
+                SelectedPeriod = CALC_MONTH;
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error!", $"{ex.Message}\n{ex.StackTrace}" , "OK");
+            }
         }
 
         private async Task<List<ExpensesModel>> GetExpensesAsync() {

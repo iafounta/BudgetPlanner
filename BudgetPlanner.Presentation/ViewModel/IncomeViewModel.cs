@@ -138,30 +138,37 @@
 
         async Task GetIncomeAsync()
         {
-            if (IncomeItems is null)
+            try
             {
-                IncomeItems = new();
-            }
+                if (IncomeItems is null)
+                {
+                    IncomeItems = new();
+                }
 
-            if (IncomeItems.Count != 0)
-            {
-                return;
-            }
-
-            var result = await _mediator.Send(new Application.UseCases.Income.GetAllIncomes());
-            if (result.IsSuccess)
-            {
-                if (result.Value!.Count == 0)
+                if (IncomeItems.Count != 0)
                 {
                     return;
                 }
 
-                foreach (Domain.Entities.Income? income in result.Value)
+                var result = await _mediator.Send(new Application.UseCases.Income.GetAllIncomes());
+                if (result.IsSuccess)
                 {
-                    IncomeItems.Add(new IncomeModel() { Id = income.Id, Name = income.Name, Amount = income.Amount, TimeInterval = income.TimeInterval });
+                    if (result.Value!.Count == 0)
+                    {
+                        return;
+                    }
+
+                    foreach (Domain.Entities.Income? income in result.Value)
+                    {
+                        IncomeItems.Add(new IncomeModel() { Id = income.Id, Name = income.Name, Amount = income.Amount, TimeInterval = income.TimeInterval });
+                    }
                 }
+                
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error!", $"{ex.Message}\n{ex.StackTrace}" , "OK");
             }
         }
-
     }
 }

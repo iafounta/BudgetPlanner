@@ -139,28 +139,35 @@ public partial class ExpensesViewModel : ObservableObject
 
     async Task GetExpensesAsync()
     {
-        if (ExpensesItems is null)
+        try
         {
-            ExpensesItems = new();
-        }
+            if (ExpensesItems is null)
+            {
+                ExpensesItems = new();
+            }
 
-        if (ExpensesItems.Count != 0)
-        {
-            return;
-        }
-
-        var result = await _mediator.Send(new GetAllExpense());
-        if (result.IsSuccess)
-        {
-            if (result.Value!.Count == 0)
+            if (ExpensesItems.Count != 0)
             {
                 return;
             }
 
-            foreach (Domain.Entities.Expense? expense in result.Value)
+            var result = await _mediator.Send(new GetAllExpense());
+            if (result.IsSuccess)
             {
-                ExpensesItems.Add(new ExpensesModel() { Id = expense.Id, Name = expense.Name, Amount = expense.Amount, TimeInterval = expense.TimeInterval });
+                if (result.Value!.Count == 0)
+                {
+                    return;
+                }
+
+                foreach (Domain.Entities.Expense? expense in result.Value)
+                {
+                    ExpensesItems.Add(new ExpensesModel() { Id = expense.Id, Name = expense.Name, Amount = expense.Amount, TimeInterval = expense.TimeInterval });
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Error!", $"{ex.Message}\n{ex.StackTrace}" , "OK");
         }
     }
 
