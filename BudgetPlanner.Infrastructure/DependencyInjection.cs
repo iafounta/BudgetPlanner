@@ -8,7 +8,6 @@ public static class DependencyInjection
         // Repositories
         services.AddSingleton<IExpenseRepository, ExpenseRepository>();
         services.AddSingleton<IIncomeRepository, IncomeRepository>();
-        services.AddAutoMapper(typeof(MappingProfile));
         return services;
     }
 }

@@ -1,22 +1,14 @@
-﻿using AutoMapper;
-using BudgetPlanner.Infrastructure.Entities;
-using Microsoft.VisualBasic;
-
-namespace BudgetPlanner.Infrastructure.Repositories;
+﻿namespace BudgetPlanner.Infrastructure.Repositories;
 
 public class IncomeRepository : IIncomeRepository
 {
     private readonly string databasePath;
-    private  SQLiteAsyncConnection database;
+    private SQLiteAsyncConnection? database;
     private const SQLiteOpenFlags Flags = SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create | SQLiteOpenFlags.SharedCache;
-    private readonly IMapper mapper;
 
-    public IncomeRepository(IDatabasePathProvider pathProvider, IMapper mapper)
+    public IncomeRepository(IDatabasePathProvider pathProvider)
     {
         databasePath = pathProvider.GetDatabasePath();
-        //database = new SQLiteAsyncConnection(databasePath, Flags);
-        //database.CreateTableAsync<IncomeDBEntity>().Wait();
-        this.mapper = mapper;
     }
 
     async Task Init()
@@ -28,42 +20,64 @@ public class IncomeRepository : IIncomeRepository
        await database.CreateTableAsync<IncomeDBEntity>();
     }
 
-
     public async Task<Income> GetOneIncomeAsync(int id)
     {
         await Init();
-        IncomeDBEntity a = await database.Table<IncomeDBEntity>().FirstOrDefaultAsync(x => x.Id == id);
-        return mapper.Map<Income>(a);
+        IncomeDBEntity incomeDBEntity = await database!.Table<IncomeDBEntity>().FirstOrDefaultAsync(x => x.Id == id);
+        Income income = new()
+        {
+            Id = incomeDBEntity.Id,
+            Amount = incomeDBEntity.Amount,
+            Name = incomeDBEntity.Name,
+            TimeInterval = incomeDBEntity.TimeInterval
+        };
+        return income;
     }
 
     public async Task<List<Income>> GetIncomesAsync()
     {
         await Init();
-        List<IncomeDBEntity> IncomeDbEntityList = await database.Table<IncomeDBEntity>().ToListAsync();
-        var Incomes = IncomeDbEntityList.Select(item => mapper.Map<Income>(item)).ToList();
-        return Incomes;
+        List<IncomeDBEntity> IncomeDbEntityList = await database!.Table<IncomeDBEntity>().ToListAsync();
+        List<Income> list = [];
+        foreach (IncomeDBEntity incomeDBEntity in IncomeDbEntityList)
+        {
+            list.Add(new Income() {
+                Id = incomeDBEntity.Id,
+                Amount = incomeDBEntity.Amount,
+                Name = incomeDBEntity.Name,
+                TimeInterval = incomeDBEntity.TimeInterval
+            });
+        }
+        return list;
     }
 
     public async Task<int> SaveIncomeAsync(Income item)
     {
         await Init();
-        IncomeDBEntity IncomeDbEntity = mapper.Map<IncomeDBEntity>(item);
+        IncomeDBEntity incomeDBEntity = new()
+        {
+            Id = item.Id,
+            Amount = item.Amount,
+            Name = item.Name,
+            TimeInterval = item.TimeInterval
+        };
+
         bool isItemExisting = false;
 
         if (item.Id != 0)
         {
-            isItemExisting = await database.Table<IncomeDBEntity>().FirstOrDefaultAsync(x => x.Id == IncomeDbEntity.Id) != null;
+            isItemExisting = await database!.Table<IncomeDBEntity>().FirstOrDefaultAsync(x => x.Id == incomeDBEntity.Id) != null;
         }
 
         if (isItemExisting)
         {
-            await database.UpdateAsync(IncomeDbEntity);
-            return IncomeDbEntity.Id;
+            await database!.UpdateAsync(incomeDBEntity);
+            return incomeDBEntity.Id;
         }
         else
         {
-            await database.InsertAsync(IncomeDbEntity);
-            return IncomeDbEntity.Id;
+            await database!.InsertAsync(incomeDBEntity);
+            return incomeDBEntity.Id;
         }
 
     }
@@ -71,6 +85,6 @@ public class IncomeRepository : IIncomeRepository
     public async Task<int> DeleteIncomeAsync(int id)
     {
         await  Init();
-        return await database.DeleteAsync<IncomeDBEntity>(id);
+        return await database!.DeleteAsync<IncomeDBEntity>(id);
     }
 }

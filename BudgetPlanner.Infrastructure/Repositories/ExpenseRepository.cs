@@ -1,23 +1,15 @@
-﻿using AutoMapper;
-using BudgetPlanner.Infrastructure.Entities;
-
-namespace BudgetPlanner.Infrastructure.Repositories;
+﻿namespace BudgetPlanner.Infrastructure.Repositories;
 
 public class ExpenseRepository : IExpenseRepository
 {
     private readonly string databasePath;
-    private  SQLiteAsyncConnection database;
+    private SQLiteAsyncConnection? database;
     private const SQLiteOpenFlags Flags = SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create | SQLiteOpenFlags.SharedCache;
-    private readonly IMapper mapper;
 
-    public ExpenseRepository(IDatabasePathProvider pathProvider, IMapper mapper)
+    public ExpenseRepository(IDatabasePathProvider pathProvider)
     {
         databasePath = pathProvider.GetDatabasePath();
-        //database = new SQLiteAsyncConnection(databasePath, Flags);
-        //database.CreateTableAsync<ExpenseDBEntity>().Wait();
-        this.mapper = mapper;
     }
-
 
     async Task Init()
     {
@@ -30,38 +22,61 @@ public class ExpenseRepository : IExpenseRepository
 
     public async Task<Expense> GetOneExpenseAsync(int id) {
         await Init();
-        ExpenseDBEntity a = await database.Table<ExpenseDBEntity>().FirstOrDefaultAsync(x => x.Id == id);
-        return mapper.Map<Expense>(a);
+        ExpenseDBEntity expenseDBEntity = await database!.Table<ExpenseDBEntity>().FirstOrDefaultAsync(x => x.Id == id);
+        Expense expense = new()
+        {
+            Id = expenseDBEntity.Id,
+            Amount = expenseDBEntity.Amount,
+            Name = expenseDBEntity.Name,
+            TimeInterval = expenseDBEntity.TimeInterval
+        };
+        return expense;
     }
 
     public async Task<List<Expense>> GetExpensesAsync()
     {
         await Init();
-        List<ExpenseDBEntity> expenseDbEntityList = await database.Table<ExpenseDBEntity>().ToListAsync();
-        var expenses = expenseDbEntityList.Select(item => mapper.Map<Expense>(item)).ToList();
-        return expenses;
+        List<ExpenseDBEntity> expenseDbEntityList = await database!.Table<ExpenseDBEntity>().ToListAsync();
+        List<Expense> list = [];
+        foreach (ExpenseDBEntity expenseDBEntity in expenseDbEntityList)
+        {
+            list.Add(new Expense() {
+                Id = expenseDBEntity.Id,
+                Amount = expenseDBEntity.Amount,
+                Name = expenseDBEntity.Name,
+                TimeInterval = expenseDBEntity.TimeInterval
+            });
+        }
+        return list;
     }
 
     public async Task<int> SaveExpenseAsync(Expense item)
     {
         await Init();
-        ExpenseDBEntity expenseDbEntity = mapper.Map<ExpenseDBEntity>(item);
+        ExpenseDBEntity expenseDBEntity = new()
+        {
+            Id = item.Id,
+            Amount = item.Amount,
+            Name = item.Name,
+            TimeInterval = item.TimeInterval
+        };
+
         bool isItemExisting = false;
 
         if (item.Id !=  0) 
         {
-            isItemExisting = await database.Table<ExpenseDBEntity>().FirstOrDefaultAsync(x => x.Id == expenseDbEntity.Id) != null ;
+            isItemExisting = await database!.Table<ExpenseDBEntity>().FirstOrDefaultAsync(x => x.Id == expenseDBEntity.Id) != null ;
         }
 
         if (isItemExisting)
         {
-            await database.UpdateAsync(expenseDbEntity);
-            return expenseDbEntity.Id;
+            await database!.UpdateAsync(expenseDBEntity);
+            return expenseDBEntity.Id;
         }
         else
         {
-            await database.InsertAsync(expenseDbEntity);
-            return expenseDbEntity.Id;
+            await database!.InsertAsync(expenseDBEntity);
+            return expenseDBEntity.Id;
         }
 
     }
@@ -69,6 +84,6 @@ public class ExpenseRepository : IExpenseRepository
     public async Task<int> DeleteExpenseAsync(int id)
     {
         await Init();
-        return await database.DeleteAsync<ExpenseDBEntity>(id);
+        return await database!.DeleteAsync<ExpenseDBEntity>(id);
     }
 }
