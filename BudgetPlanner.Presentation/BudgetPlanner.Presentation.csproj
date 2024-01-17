@@ -24,7 +24,7 @@
 		<ApplicationTitle>BudgetPlanner.Presentation</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.budgetplanner.presentation</ApplicationId>
+		<ApplicationId>ch.budgetplanner</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
